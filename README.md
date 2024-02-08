@@ -112,6 +112,35 @@ Now a square:
 
 int	main(void)
 {
+								500,
+								"my first window");
+	x = 0;
+	y = 50;
+	while (y < HEIGHT - 50)
+	{
+		x = 50;
+		while (x < WIDTH - 50)
+		{
+			mlx_pixel_put(mlx_connection,
+							mlx_window,
+							x,
+							y,
+							0x00ACA6);
+			x++;
+		}
+		y++;
+	}
+	mlx_loop(mlx_connection);
+}
+```
+
+or even better, for future changes:
+```c
+#define WIDTH 500
+#define HEIGHT 500
+
+int	main(void)
+{
 	void	*mlx_connection;
 	void	*mlx_window;
 	int		x;
@@ -119,21 +148,56 @@ int	main(void)
 
 	mlx_connection = mlx_init();
 	mlx_window = mlx_new_window(mlx_connection,
-								500,
-								500,
+								WIDTH,
+								HEIGHT,
 								"my first window");
 	x = 0;
-	y = 0;
-	while (y < HEIGHT)
+	y = HEIGHT * 0.1;
+	while (y < HEIGHT * 0.9)
 	{
-		x = 0;
-		while (x < WIDTH)
+		x = WIDTH * 0.1;
+		while (x < WIDTH * 0.9)
 		{
 			mlx_pixel_put(mlx_connection,
 							mlx_window,
 							x,
 							y,
 							0x00ACA6);
+			x++;
+		}
+		y++;
+	}
+	mlx_loop(mlx_connection);
+}
+```
+
+Now to finish our "pollock" painting we will use the rand() function from <stdlib.h> which will give us a random integer for our color integer. Like this:
+
+```c
+int	main(void)
+{
+	void	*mlx_connection;
+	void	*mlx_window;
+	int		x;
+	int		y;
+
+	mlx_connection = mlx_init();
+	mlx_window = mlx_new_window(mlx_connection,
+								WIDTH,
+								HEIGHT,
+								"my first window");
+	x = 0;
+	y = HEIGHT * 0.1;
+	while (y < HEIGHT * 0.9)
+	{
+		x = WIDTH * 0.1;
+		while (x < WIDTH * 0.9)
+		{
+			mlx_pixel_put(mlx_connection,
+							mlx_window,
+							x,
+							y,
+							rand() % 0x1000000);
 			x++;
 		}
 		y++;

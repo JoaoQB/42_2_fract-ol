@@ -6,13 +6,14 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 11:49:25 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/02/08 13:36:24 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/02/08 13:51:29 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minilibx-linux/mlx.h"
+#include <stdlib.h>
 
-#define WIDTH 500
+#define WIDTH 1000
 #define HEIGHT 500
 
 int	main(void)
@@ -24,21 +25,21 @@ int	main(void)
 
 	mlx_connection = mlx_init();
 	mlx_window = mlx_new_window(mlx_connection,
-								500,
-								500,
+								WIDTH,
+								HEIGHT,
 								"my first window");
 	x = 0;
-	y = 0;
-	while (y < HEIGHT)
+	y = HEIGHT * 0.1;
+	while (y < HEIGHT * 0.9)
 	{
-		x = 0;
-		while (x < WIDTH)
+		x = WIDTH * 0.1;
+		while (x < WIDTH * 0.9)
 		{
 			mlx_pixel_put(mlx_connection,
 							mlx_window,
 							x,
 							y,
-							0x00ACA6);
+							rand() % 0x1000000);
 			x++;
 		}
 		y++;
