@@ -6,12 +6,13 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 11:49:25 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/02/08 13:56:31 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/02/08 13:59:25 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minilibx-linux/mlx.h"
 #include <stdlib.h>
+#include <time.h>
 
 #define WIDTH 500
 #define HEIGHT 500
@@ -23,6 +24,7 @@ int	main(void)
 	int		x;
 	int		y;
 
+	srand(time(NULL));
 	mlx_connection = mlx_init();
 	mlx_window = mlx_new_window(mlx_connection,
 								WIDTH,
