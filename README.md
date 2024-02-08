@@ -2,11 +2,11 @@
 
 ## Understanding minilibx | Pollock painting
 
-Minilibx is a tiny graphics library which allows one to do most basic things for rendering something in screens.
+`Minilibx` is a tiny graphics library which allows one to do most basic things for rendering something in screens.
 
-The X in minilibx stands for X-server. X-server is a program, a middle man, that acts in between the user and applications (like a browser) that want to render windows in a display.
+The `X` in `minilibx` stands for `X-server`. X-server is a program, a middle man, that acts in between the user and applications (like a browser) that want to render windows in a display.
 
-X-Window is a network-oriented graphical system for Unix. One of the most common examples of such implementation would be TeamViewer.
+`X-Window` is a network-oriented graphical system for Unix. One of the most common examples of such implementation would be TeamViewer.
 
 `mlx_init()` is a function that starts the connection with the graphical server and returns a pointer to the connection.
 
