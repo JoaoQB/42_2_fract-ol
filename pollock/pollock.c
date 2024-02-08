@@ -6,14 +6,14 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 11:49:25 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/02/08 13:51:29 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/02/08 13:56:31 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minilibx-linux/mlx.h"
 #include <stdlib.h>
 
-#define WIDTH 1000
+#define WIDTH 500
 #define HEIGHT 500
 
 int	main(void)
@@ -44,5 +44,11 @@ int	main(void)
 		}
 		y++;
 	}
+	mlx_string_put(mlx_connection,
+					mlx_window,
+					WIDTH * 0.8,
+					HEIGHT * 0.95,
+					rand() % 0x1000000,
+					"My pollock");
 	mlx_loop(mlx_connection);
 }
