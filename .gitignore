@@ -1,4 +1,6 @@
 pollock/minilibx-linux
-
+/minilibx-linux
 /.vscode
 a.out
+*.o
+window
