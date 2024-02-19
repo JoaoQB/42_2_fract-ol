@@ -6,11 +6,11 @@
 #    By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/08 12:03:00 by jqueijo-          #+#    #+#              #
-#    Updated: 2024/02/16 12:31:24 by jqueijo-         ###   ########.fr        #
+#    Updated: 2024/02/19 10:20:09 by jqueijo-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = window
+NAME = fractol
 
 SRC = window.c \
 
