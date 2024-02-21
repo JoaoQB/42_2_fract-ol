@@ -545,3 +545,54 @@ That's because we have 16 digits to represent a number (0123456789ABCDEF).
 However this solution is only useful if we already know what color we want to use at compile time.
 If the color is provided for example by the user or any other source, then we need to use the encode_rgb function.
 
+### Let's use the pixel!
+
+```c
+int	handle_keypress(int keysym, t_data *data)
+{
+	if (keysym == XK_Escape)
+	{
+		mlx_destroy_window(data->mlx_ptr, data->win_ptr);
+		data->win_ptr = NULL;
+	}
+	return (0);
+}
+
+int	render(t_data *data)
+{
+	/* If window has been destroyed, we don't want to put the pixel! */
+	if (data->win_ptr != NULL)
+		mlx_pixel_put(data->mlx_ptr, data->win_ptr, WIDTH / 2, HEIGHT / 2, RED_PIXEL);
+	return (0);
+}
+
+int	main(void)
+{
+	t_data	data;
+
+	data.mlx_ptr = mlx_init();
+	if (data.mlx_ptr == NULL)
+		return (MLX_ERROR);
+	data.win_ptr = mlx_new_window(data.mlx_ptr, WIDTH, HEIGHT, "My window!");
+	if (data.win_ptr == NULL)
+	{
+		free(data.win_ptr);
+		return (MLX_ERROR);
+	}
+
+	/* Setup Hooks */
+	mlx_loop_hook(data.mlx_ptr, &render, &data);
+	mlx_hook(data.win_ptr, KeyPress, KeyPressMask, &handle_keypress, &data);
+
+	mlx_loop(data.mlx_ptr);
+
+	/* Exit the loop if there's no window, execute this code */
+	mlx_destroy_display(data.mlx_ptr);
+	free(data.mlx_ptr);
+}
+```
+
+We need to put the `if` statement before the `mlx_pixel_put` function, to ensure we're not trying to put a pixel in a non existing window.
+Also we need to ensure that our `win_ptr` is set to null after the call to `mlx_destroy_window` to make this check actually work (and get rid of leaks - not sure why).
+
+### Let's draw a rectangle!
