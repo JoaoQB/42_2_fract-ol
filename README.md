@@ -364,8 +364,132 @@ Also note that first we use `mlx_destroy_window` and only after `mlx_destroy_dis
 
 ## Managing Events
 
+When using the `mlx_loop` function, minilibx allow for `events` to happen during the loop.
+These events should be registered before the `mlx_loop` function is called, but they are triggered after the loop has started.
+Clicking the window, moving the mouse, pressing a key, are all possible events.
 
+In order to register events we can use a set of function called `hooks`, provided by the `minilibx API`.
+There are five hook functions:
 
+```c
+int	mlx_mouse_hook (void *win_ptr, int (*funct_ptr)(), void *param);
+int	mlx_key_hook (void *win_ptr, int (*funct_ptr)(), void *param);
+int	mlx_expose_hook (void *win_ptr, int (*funct_ptr)(), void *param);
+int	mlx_loop_hook (void *mlx_ptr, int (*funct_ptr)(), void *param);
+int	mlx_hook(void *win_ptr, int x_event, int x_mask, int (*funct)(), void *param);
+```
+
+They have similar parameters. `win_ptr` is the pointer to a window. The window will register for the given event.
+`(*func_ptr)()` is a pointer to a function that returns an int and takes undefined parameters.
+- Beware, (*func_ptr)() is not the same as (*func_ptr)(void): the last means NO argument while the first means "any set of arguments".-
+`param` is the address of an element you want to access in your `func_ptr` when handling events.
+
+Let's use the code above and add a new feature: now when `esc` is pressed, the window will disappear and all the memory allocated will be properly freed.
+
+```c
+typedef struct s_data
+{
+	void	*mlx_ptr;
+	void	*win_ptr;
+}	t_data;
+
+int	handle_no_event(void *data)
+{
+	/* This function needs to exist, but it is useless for the moment */
+	return (0);
+}
+
+int	handle_input(int keysym, t_data *data)
+{
+	if (keysym == XK_Escape)
+		mlx_destroy_window(data->mlx_ptr, data->win_ptr);
+	return (0);
+}
+
+int	main(void)
+{
+	t_data	data;
+
+	data.mlx_ptr = mlx_init;
+	if (data.mlx_ptr == NULL)
+		return (MLX_ERROR);
+	data.win_ptr = mlx_new_window(data.mlx_ptr, WIDTH, HEIGHT, "My first window!");
+	if (data.win_ptr == NULL)
+	{
+		free(data.win_ptr);
+		return (MLX_ERROR);
+	}
+
+	/* Setup Hooks */
+	mlx_loop_hook(data.mlx_ptr, &handle_no_event, &data);
+	mlx_key_hook(data.win_ptr, &handle_input, &data);
+
+	mlx_loop(data.mlx_ptr);
+	/* Exit the loop if there's no window, execute this code */
+	mlx_destroy_display(data.mlx_ptr);
+	free(data.mlx_ptr);
+}
+```
+
+We now use a structure to organize data. That is because we can only pass a single void pointer to the `hook` functions, but we might want to have multiple arguments.
+
+The `mlx_key_hook` function is used to get a proper event. Everytime a key is released, the function executed will be the `handle_input` function.
+It is inside the `handle_input` function that we check if the `key symbol` that was released corresponds to the escape key.
+
+We also use `mlx_loop_hook`, and it is triggered when there's no event processed. It is especially useful to draw things continuously on the screen.
+Even though we haven't used it in the example above, we need to include it otherwise the loop would never have ended. That's related to how the `mlx_loop is implemented`.
+
+When using the above code, we see that the `mlx_key_hook` waits that a key is released, not that it is pressed.
+Let's look at the `mlx_hook` function. It takes extra parameters. - int	mlx_hook(void *win_ptr, int x_event, int x_mask, int (*funct)(), void *param); -
+
+`x_event` is an integer corresponding to the name of the `X event`. All the event names are found in the `X11/X.h` header.
+`x_mask` is a bit mask corresponding to the X event. The list of all available masks is also defined in the same header.
+Let's change the program to add an `event handler` for the `KeyPress` event.
+
+```c
+#include <X11/X.h>
+
+int	handle_keypress(int keysym, t_data *data)
+{
+	if (keysym == XK_Escape)
+		mlx_destroy_window(data->mlx_ptr, data->win_ptr);
+	printf("Keypress: %d\n", keysym);
+	return (0);
+}
+
+int	handle_keyrelease(int keysym, t_data *data)
+{
+	printf("Keyrelease: %d\n", keysym);
+	return (0);
+}
+
+int	main(void)
+{
+	t_data	data;
+
+	data.mlx_ptr = mlx_init();
+	if (data.mlx_ptr == NULL)
+		return (MLX_ERROR);
+	data.win_ptr = mlx_new_window(data.mlx_ptr, WIDTH, HEIGHT, "My first window!");
+	if (data.win_ptr == NULL)
+	{
+		free(data.win_ptr);
+		return (MLX_ERROR);
+	}
+
+	/* Setup Hooks */
+	mlx_loop_hook(data.mlx_ptr, &handle_no_event, &data);
+	mlx_hook(data.win_ptr, KeyPress, KeyPressMask, &handle_keypress, &data);
+	mlx_hook(data.win_ptr, KeyRelease, KeyReleaseMask, &handle_keyrelease, &data);
+
+	mlx_loop(data.mlx_ptr);
+	/* Exit the loop if there's no window, execute this code */
+	mlx_destroy_display(data.mlx_ptr);
+	free(data.mlx_ptr);
+}
+```
+
+Each hook now has it's own handler, the previously used `key_release` and the newly added `key_press`.
 
 ## Colors
 

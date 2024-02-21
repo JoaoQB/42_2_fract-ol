@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 12:58:23 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/02/19 14:12:07 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/02/21 10:18:38 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 # include <stdint.h> // Define integer types, limits, macros
 # include <stdlib.h> // Memory allocation
 # include <stdio.h> // Printf
+# include <X11/keysym.h> // Predefined key symbols corresponding to keycodes
+# include <X11/X.h> // Constant definitions for Xlib functions
 
 # define WIDTH 500
 # define HEIGHT 500
@@ -32,5 +34,9 @@ typedef struct s_data
 } t_data;
 
 int	encode_rgb(uint8_t red, uint8_t green, uint8_t blue);
+int	handle_no_event(void *data);
+int	handle_input(int keysym, t_data *data);
+int	handle_keyrelease(int keysym, t_data *data);
+int	handle_keypress(int keysym, t_data *data);
 
 #endif
