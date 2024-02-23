@@ -596,3 +596,233 @@ We need to put the `if` statement before the `mlx_pixel_put` function, to ensure
 Also we need to ensure that our `win_ptr` is set to null after the call to `mlx_destroy_window` to make this check actually work (and get rid of leaks - not sure why).
 
 ### Let's draw a rectangle!
+
+One possible implementation:
+
+```c
+typedef struct s_rect
+{
+	int	x;
+	int	y;
+	int	width;
+	int	height;
+	int	color;
+} t_rect;
+
+/* X and Y coordinates correspond to it's upper left corner. */
+
+int	render_rect(t_data *data, t_rect rect)
+{
+	int	i;
+	int	j;
+
+	if (data->win_ptr == NULL)
+		return (1);
+	i = rect.y;
+	while (i < rect.y + rect.height)
+	{
+		j = rect.x;
+		while (j < rect.x + rect.width)
+			mlx_pixel_put(data->mlx_ptr, data->win_ptr, j++, i, rect.color);
+		i++;
+	}
+	return (0);
+}
+```
+
+In order to render the rectangles, we need to modify the `render` function:
+
+```c
+int	render(t_data *data)
+{
+	render_rect(data, (t_rect){WINDOW_WIDTH - 100, WINDOW_HEIGHT - 100, 100, 100, GREEN_PIXEL});
+	render_rect(data, (t_rect){0, 0, 100, 100, RED_PIXEL});
+
+	return (0);
+}
+```
+
+These `render_rect` function will display two rectangles: one in the upper left corner and one in the bottom right corner.
+`(t_rect){}` is what is called a `compound literal`. Since C99, this is how we initialize structures without having to manually assign each member.
+We're directly passing a structure by value here.
+
+A `compound literal` allows us to create an unnamed object of a specified type and initialize it with values all in one go. It's primarly used when one needs to pass temporary data to functions or initialize a structure without declaring separate variables.
+
+Syntax:
+
+```c
+(type){initializer}
+```
+
+For example in the code above:
+
+```c
+(t_rect){WINDOW_WIDTH - 100, WINDOW_HEIGHT - 100, 100, 100, GREEN_PIXEL}
+```
+
+Benefits of `compound literals`:
+
+Concise initialization: Allows to initialize structures in a single line, reducing code clutter.
+Temporary objects: We can pass temporary data directly to functions without declaring seperate variables, improving code readability.
+
+Alternative without `compound literals`:
+
+We would have to declare a separate variable to hold values and then pass that variable to the function. I.e:
+
+```c
+t_rect	rect;
+
+rect.x = WINDOW_WIDTH - 100;
+rect.y = WINDOW_HEIGHT - 100;
+rect.width = 100;
+rect.height = 100;
+rect.color = GREEN_PIXEL;
+
+render_rect(data, rect);
+```
+
+This achieves the same result but requires more lines of code and introduces an aditional variable (rect).
+This is less efficient in terms of code readability, mantainability, especially dor temporary or one-time use cases.
+
+
+### Drawbacks of our approach
+
+To visualize what's wrong let's implement a render_background function that will change the background color of the window.
+
+```c
+void	render_background(t_data *data, int color)
+{
+	int	i;
+	int	j;
+
+	if (data->win_ptr == NULL)
+		return ;
+	i = 0;
+	while (i < HEIGHT)
+	{
+		j = 0;
+		while (j < WIDTH)
+			mlx_pixel_put(data->mlx_ptr, data->win_ptr, j++, i, color);
+		++i;
+	}
+}
+```
+Add it to the render function:
+
+```c
+int	render(t_data *data)
+{
+	if (data->win_ptr != NULL)
+	{
+		render_background(data, WHITE_PIXEL);
+		render_rect(data, (t_rect){WIDTH - 100, HEIGHT - 100, 100, 100, GREEN_PIXEL});
+		render_rect(data, (t_rect){0, 0, 100, 100, RED_PIXEL});
+
+		return (0);
+	}
+	return (0);
+}
+```
+
+Compiling and running the program we get horrible flickering.
+That's because `mlx_pixel_put` draws the pixel on the window directly, and whoever is looking at the window will see the change instantly.
+We want instead to wait for the whole background and then the whole rectangles to be drawn, and then push that on the window.
+Since everything here was done without delay, it gives us the flickering effect.
+Fortunately the minilibx provides us with a solution to both problems.
+
+### Using minilibx to draw on screen
+
+One of the prefered ways to draw on a screen is using images. The objective is to first create an image (a collection of pixels) and edit its pixels directly.
+When done, we can then push the whole image to the window and the graphics should be properly rendered.
+Because minilibx allows us to share images with the `X server` through memory, using a pointer we can change the pixels directly much much faster.
+
+Let's use the function `mlx_new_image` to create a new image.
+```c
+void	*mlx_new_image(void *mlx_ptr, int width, int height);
+```
+
+To do that we first need to create a `t_image` type struct to hold all the stuff we need to work with an mlx image.
+
+```c
+typedef struct s_img
+{
+	void	*mlx_img;
+	char	*addr;
+	int		bpp; // Bits per pixel
+	int		line_len;
+	int		endian;
+} t_img;
+```
+
+Add that to our t_data object.
+
+```c
+typedef struct s_data
+{
+	void	*mlx_ptr;
+	void	*win_ptr;
+	t_img	img;
+}	t_data;
+```
+
+Creating the image:
+
+```c
+data.img.mlx_img = mlx_new_image(data.mlx_ptr, WIDTH, HEIGHT);
+```
+
+Now we have the image, but we still need some information to make it work.
+We'll specially need the address of the image in the shared memory, in order to change the pixels on it directly.
+We'll also need some additional info to helps us with calculations (`bpp`, `line_len` and `endian` member values).
+To do so we can use `mlx_get_data_addr`.
+
+```c
+char	*mlx_get_data_addr(void *img_ptr, int *bits_per_pixel, int *size_line, int *endian);
+```
+
+We pass it the img we've got from `mlx_new_image`. The last three arguments we pass the address of an int variable. The function will set the integers correctly.
+It's a way to return multiple values.
+
+Also, `mlx_get_data_addr` function return the actual address of the image as an array of pixels.
+We get a pointer to char, which means we will navigate an array one byte at a time, and not one pixel, as we saw before a pixel usually takes more than a byte.
+
+```c
+int	main(void)
+{
+	t_data	data;
+
+	data.mlx_ptr = mlx_init();
+	if (data.mlx_ptr == NULL)
+		return (MLX_ERROR);
+	data.win_ptr = mlx_new_window(data.mlx_ptr, WIDTH, HEIGHT, "My window!");
+	if (data.win_ptr == NULL)
+	{
+		free(data.win_ptr);
+		return (MLX_ERROR);
+	}
+
+	data.img.mlx_img = mlx_new_image(data.mlx_ptr, WIDTH, HEIGHT);
+	data.img.addr = mlx_get_data_addr(data.img.mlx_img, &data.img.bpp, &data.img.line_len, &data.img.endian);
+	printf("bpp: %d\n", data.img.bpp);
+	printf("line_len: %d\n", data.img.line_len);
+	printf("endian: %d\n", data.img.endian);
+	printf("Image address: %p\n", data.img.addr);
+
+	/* Setup Hooks */
+	mlx_loop_hook(data.mlx_ptr, &render, &data);
+	mlx_hook(data.win_ptr, KeyPress, KeyPressMask, &handle_keypress, &data);
+
+	mlx_loop(data.mlx_ptr);
+
+	/* Exit the loop if there's no window, execute this code */
+	mlx_destroy_display(data.mlx_ptr);
+	free(data.mlx_ptr);
+}
+```
+
+Now the complicated part. We need to retrieve a pixel at some x and y coordinates, but we don't have a two-dimensional array.
+On top of that we are dealing with bytes, but one pixel takes more than a byte because we're using the true colors standard.
+This amount is given by the bpp (bits) value we get from `mlx_get_data_addr`.
+However we don't know how many bytes an int really is so we can't cast the pointer safely.
+
+Finding the pixel's first byte's address
