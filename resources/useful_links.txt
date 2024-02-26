@@ -2,10 +2,10 @@ https://www.youtube.com/watch?v=9eAPbNUQD1Y
 	Draw a Pollock painting with minilibx | DONE
 
 https://harm-smits.github.io/42docs/libs/minilibx
-	Minilibx manual
+	Minilibx manual | HERE
 
 https://aurelienbrabant.fr/blog/getting-started-with-the-minilibx
-	Minilibx guide | HERE
+	Minilibx guide | DONE
 
 https://www.youtube.com/playlist?list=PLTXMX1FE5Hj7JmR73CQDXkNq8OVn9_Z6F
 	Beginner's Guide To The Desktop
@@ -15,3 +15,6 @@ https://www.youtube.com/watch?v=ANLW1zYbLcs
 
 https://www.youtube.com/watch?v=fWP29aVVycA
 	Mandelbrot Set In C++ with SDL2 Tutorial
+
+https://www.freecodecamp.org/news/what-is-endianness-big-endian-vs-little-endian/
+	what is endianness

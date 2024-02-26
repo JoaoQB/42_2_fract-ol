@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 12:58:23 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/02/23 12:38:37 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/02/26 10:46:45 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,12 +53,13 @@ typedef struct s_data
 	t_img	img;
 } t_data;
 
-int	encode_rgb(uint8_t red, uint8_t green, uint8_t blue);
-int	handle_no_event(void *data);
+int		encode_rgb(uint8_t red, uint8_t green, uint8_t blue);
+int		handle_no_event(void *data);
 // int	handle_input(int keysym, t_data *data);
 // int	handle_keyrelease(int keysym, t_data *data);
-int	handle_keypress(int keysym, t_data *data);
-int	render(t_data *data);
-int	render_rect(t_data *data, t_rect rect);
+int		handle_keypress(int keysym, t_data *data);
+int		render(t_data *data);
+int		render_rect(t_img *img, t_rect rect);
+void	render_background(t_img *img, int color);
 
 #endif

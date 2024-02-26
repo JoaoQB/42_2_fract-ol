@@ -825,4 +825,109 @@ On top of that we are dealing with bytes, but one pixel takes more than a byte b
 This amount is given by the bpp (bits) value we get from `mlx_get_data_addr`.
 However we don't know how many bytes an int really is so we can't cast the pointer safely.
 
-Finding the pixel's first byte's address
+Let's assume we want to get the pixel at coordinates (5, 10). That means we want the 5th pixel of the 10th row.
+Our window is 600x300.
+`mlx_get_data_addr` provided us the `line_len` value, which is 2400 and is basically the amount of bytes taken by one row of our image.
+It is equivalent to `width * (bpp / 8)`.
+That is because bpp means bits per pixel, and there are 8 bits in a byte, therefore you divide the total by 8. That gives you the amount of bytes required to represent each pixel.
+
+In our case an int is four bytes, so it is 600 * (32/8), which is 600 * 4, which is equal to 2400 (bytes per row).
+Therefore the first row begins at index 0, the second one at 2400, the third one at 4800, and so on. So to find the correct row index we do 2400 * 10.
+
+To find the correct column we need to move in the row by the given number of pixels.
+In our case - pixel (5, 10) - we need to multiply 5 by the number of bytes a pixel actually takes (in this case 4). Thus 5 * 4 = 20.
+
+Summarizing, the correct index would be: index = (2400 * 10) + (5 * 4).
+To generalize this formula using the values of `mlx_get_data_addr`, we will use the following formula:
+
+```c
+index = line_len * y + x * (bpp / 8)
+```
+
+Let's use this formula to implement our `img_pix_put` function, that will put a pixel at (x, y) coordinates of the image. It will be a replacement for `mlx_pixel_put`.
+
+```c
+void	img_pix_put(t_img *img, int x, int y, int color)
+{
+	char	*pixel;
+
+	pixel = img->addr + (y * img->line_len + x * (img->bpp / 8));
+	*(int *)pixel = color;
+}
+```
+
+This formula will work in most cases, but if for some reason our bytes per pixel value is not the same as an int, it's gonna have some problems.
+In most scenarios it will work but it is not super portable. Therefore we can do it more accurately, taking the endianness in account.
+
+```c
+void	img_pix_put(t_img *img, int x, int y, int color)
+{
+	char	*pixel;
+	int		i;
+
+	i = img->bpp - 8;
+	pixel = img->addr + (y * img->line_len + x * (img->bpp / 8));
+	while (i >= 0)
+	{
+		/* Big endian, MSB is the leftmost bit */
+		if (img->endian != 0)
+			*pixel++ = (color >> i) & 0xFF;
+		/* Little endian, LSB is the leftmost bit */
+		else
+			*pixel++ = (color >> (img->bpp - 8 - i) & 0xFF);
+		i -= 8;
+	}
+}
+```
+
+In this implementation each byte is set manually in a different way, taking endianness into account. Moreover, in this case, only the number of bytes specified by bpp is set.
+
+More info about endianness: https://www.freecodecamp.org/news/what-is-endianness-big-endian-vs-little-endian/
+
+To now draw on screen we need to refactor our `render_rect` function:
+
+```c
+int	render_rect(t_img *img, t_rect rect)
+{
+	int	i;
+	int	j;
+
+	i = rect.y;
+	while (i < rect.y + rect.height)
+	{
+		j = rect.x;
+		while (j < rect.x + rect.width)
+			img_pix_put(img, j++, i, rect.color);
+		++i;
+	}
+	return (0);
+}
+```
+
+As well as `render_background`:
+
+```c
+void	render_background(t_img *img, int color)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	while (i < HEIGHT)
+	{
+		j = 0;
+		while (j < WIDTH)
+			img_pix_put(img, j++, i, color);
+		++i;
+	}
+}
+```
+
+The most important change will be in the `render` function:
+
+```c500
+
+Now we perform all our drawings to our image instead of directly pushing the pixels on screen.
+We then push the image to the screen using `mlx_put_image_to_window`. Coordinates of the image are (0, 0) because it is covering the whole window.
+The `mlx_put_image_to_window` will push the image as well as the changes done to it (if any) at each frame.
+
