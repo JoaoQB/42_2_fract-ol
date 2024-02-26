@@ -10,6 +10,12 @@ https://aurelienbrabant.fr/blog/getting-started-with-the-minilibx
 https://www.youtube.com/playlist?list=PLTXMX1FE5Hj7JmR73CQDXkNq8OVn9_Z6F
 	Beginner's Guide To The Desktop
 
+https://www.youtube.com/watch?v=u9GAnW8xFJY
+	The mandelbrot set: math's famous fractal | DONE
+
+https://www.youtube.com/watch?v=6IWXkV82oyY
+	the mandelbrot fractal explained (Dance Competition) | HERE
+
 https://www.youtube.com/watch?v=ANLW1zYbLcs
 	fractol: render beautiful fractals in C (mandelbrot and julia set)
 
