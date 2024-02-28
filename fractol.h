@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 12:58:23 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/02/26 10:46:45 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/02/28 14:38:47 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@
 # include "minilibx-linux/mlx.h"
 # include <stdint.h> // Define integer types, limits, macros
 # include <stdlib.h> // Memory allocation
-# include <stdio.h> // Printf
+# include <stdio.h> // Standard input and output, perror function
+# include <unistd.h> // System calls
 # include <X11/keysym.h> // Predefined key symbols corresponding to keycodes
 # include <X11/X.h> // Constant definitions for Xlib functions
 
@@ -27,6 +28,12 @@
 # define GREEN_PIXEL 0x0000FF00
 # define BLUE_PIXEL 0x000000FF
 # define WHITE_PIXEL 0x00FFFFFF
+
+typedef struct s_complex
+{
+	double	real;
+	double	i;
+} t_complex;
 
 typedef struct s_rect
 {
@@ -53,13 +60,19 @@ typedef struct s_data
 	t_img	img;
 } t_data;
 
+/* window.c */
 int		encode_rgb(uint8_t red, uint8_t green, uint8_t blue);
-int		handle_no_event(void *data);
-// int	handle_input(int keysym, t_data *data);
-// int	handle_keyrelease(int keysym, t_data *data);
 int		handle_keypress(int keysym, t_data *data);
-int		render(t_data *data);
-int		render_rect(t_img *img, t_rect rect);
+void	img_pix_put_basic(t_img *img, int x, int y, int color);
+void	img_pix_put(t_img *img, int x, int y, int color);
 void	render_background(t_img *img, int color);
+int		render_rect(t_img *img, t_rect rect);
+int		render(t_data *data);
+
+/* equation.c */
+int	mandelbrot_equation(void);
+
+/* aux_utils.c */
+int	ft_strcmp(const char *str, const char *str2);
 
 #endif

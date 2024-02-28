@@ -14,7 +14,7 @@ https://www.youtube.com/watch?v=u9GAnW8xFJY
 	The mandelbrot set: math's famous fractal | DONE
 
 https://www.youtube.com/watch?v=6IWXkV82oyY
-	the mandelbrot fractal explained (Dance Competition) | HERE
+	the mandelbrot fractal explained (Dance Competition) | DONE
 
 https://www.youtube.com/watch?v=ANLW1zYbLcs
 	fractol: render beautiful fractals in C (mandelbrot and julia set)

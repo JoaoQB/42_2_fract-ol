@@ -963,3 +963,74 @@ But instead of iterating all values of `z` for a fixed value of `C`, we fix the 
 Values of `C` where iterations of `Z` squared plus `C`' stay bounded are inside the Mandelbrot set. The ones that go to infinity are not.
 We can select points inside the `Mandelbrot Set` to reveal their corresponding `Julia Set`. So the `Mandelbrot Set` is like an atlas or map cataloging all kinds of `Julia Sets`.
 Values of `C` inside the Mandelbrot set are associated with `connected Julia Sets`, and values outside the set correspond with `disconnected Julia Sets` or `disconnected dust`.
+
+In the equation `f(z) = z^2 + c`, z and c are complex numbers. So how to square a complex number?
+
+```
+(x + yi)² =
+= (x + yi) * (x + yi) =
+= x² + xyi + xyi + y²i² = 	// We know that the imaginary number rule is that i² = -1.
+= x² + 2xyi - y² = 			// y² * i² = y² * -1 = -y²
+= x² - y² + 2xyi 			// This is the new complex number, `x² - y²` is the real component and `2xyi` is the imaginary component.
+```
+
+Now that we have a better understanding of the `mandelbrot set` and `complex numbers`, let's start implementing it in c.
+
+```c
+typedef struct s_data
+{
+	double	real; // x axis
+	double	i; // y axis
+} t_complex;
+```
+
+This will be our `complex number` structure.
+And to calculate `f(z) = z^2 + c`:
+
+```c
+int	main(void)
+{
+	t_complex	z;
+	t_complex	c;
+	int			iter;
+	double		tmp_real;
+
+	z.real = 0;
+	z.i = 0;
+
+	c.real = 5;
+	c.i = 2;
+
+	iter = 0;
+	while (iter < 42)
+	{
+		//General Formula
+		// z = z² + c;
+
+		tmp_real = (z.real * z.real) - (z.i * z.i); // same as x² - y²
+
+		z.i = 2 * z.real * z.i; // same as 2xyi
+
+		z.real = tmp_real;
+
+		//Adding the c value
+		z.real += c.real;
+		z.i += c.i;
+
+		printf("iteration n -> %d real %f imaginary %f\n", iter, z.real, z.i);
+		iter++;
+	}
+}
+```
+
+For our project we need:
+	Julia and Mandelbrot set.
+	Infinite Zoom
+	Able to take command line args to discipline which fractal to render
+	Able to take command line args to shape Julia, i.e. x and y coordinates
+	Esc closes the process with no leaks
+	Click on X window, closes the process leaks free
+
+	There's two kinds of prompts:
+		./fractol mandelbrot
+		./fractol julia <real> <i>

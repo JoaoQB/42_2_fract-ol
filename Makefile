@@ -6,13 +6,16 @@
 #    By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/08 12:03:00 by jqueijo-          #+#    #+#              #
-#    Updated: 2024/02/21 09:29:32 by jqueijo-         ###   ########.fr        #
+#    Updated: 2024/02/28 14:34:16 by jqueijo-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = fractol
 
-SRC = window.c \
+SRC =  main.c \
+		aux_utils.c \
+		# equation.c \
+		# window.c \
 
 CC = cc
 MINILIBX_FLAGS= -Lminilibx-linux -l:libmlx_Linux.a -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz
