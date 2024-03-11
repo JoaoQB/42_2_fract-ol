@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/09 13:46:49 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/02/26 11:04:29 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/03/11 13:32:52 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,7 @@ int	main(void)
 	data.win_ptr = mlx_new_window(data.mlx_ptr, WIDTH, HEIGHT, "My window!");
 	if (data.win_ptr == NULL)
 	{
+		mlx_destroy_display(data.mlx_ptr);
 		free(data.win_ptr);
 		return (MLX_ERROR);
 	}
