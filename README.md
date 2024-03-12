@@ -1034,3 +1034,108 @@ For our project we need:
 	There's two kinds of prompts:
 		./fractol mandelbrot
 		./fractol julia <real> <i>
+
+We need to create our fractal struct. It will have stored all the necessary pointers and image definitions.
+
+```c
+typedef struct s_img
+{
+	void	*img_ptr;
+	char	*addr;
+	int		bpp;
+	int		endian;
+	int		line_len;
+} t_img;
+```
+
+```c
+typedef struct s_fractal
+{
+	char	*name;
+	void	*mlx_ptr;
+	void	*win_ptr;
+	t_img	img;
+} t_fractal;
+```
+
+All as usual so far, with the added `char *name`, which we will use to identify which fractal we're building and the window name.
+
+Ok so in our main function, we can already start implementing how our program is executed.
+In pseudocode:
+
+```c
+int	main(int argc, char **argv)
+{
+	t_fractal	fractal;
+	if argc == 2 and argv1 == mandelbrot
+		OR  argc == 4 and argv1 == julia
+	{
+		fractal_init(fractal);
+		fractal_render(fractal);
+		mlx_loop(mlx_ptr);
+	}
+	else
+	{
+		print to STDERR "error message";
+		exit failure;
+	}
+}
+```
+
+Fractal_init:
+
+```c
+	start mlx_ptr connection, `mlx_init()`;
+	start new window. `mlx_new_window()`;
+	start new image. `mlx_new_image()`;
+	`mlx_get_data_addr()`;
+	// Safeguard all the above functions against errors.
+
+	//events_init() - hooks and listen to events
+	//data_init() - all the zooms and shifts movement
+```
+
+Ok, now to render our fractal. Right now we have a square image, i.e. 800x800 pixels.
+But we don't want to work with integers. We want our pixels to represent points in our representation of complex numbers.
+The mandelbrot set lives inside a specific range of complex values, more specifically  between `-2x and 0.5x`, and `-1y and 1y.`. Or in real complex numbers between `(-2..0.5, -1i..1i)`.
+So we want our `800px800p` window to represent values between `-2 and 2` x and y, real and imaginary.
+To do so we can look for a rescale function.
+
+```c
+double	scale(double unscaled_num, double new_min, double new_max, double old_min, double old_max)
+{
+	return ((new_max - new_min) * (unscaled_num - old_min) / (old_max - old_min) + new_min);
+}
+```
+
+This function returns our `new_scaled_num`, for example on a scale of `0-800`, `10`, would be `1` on a scale of `0-80`. We can use this formula to return the represented `complex number value` for each pixel point in our `800x800` window. To find out what each pixel would represent in our new size we could use our function like this:
+
+```c
+double	scale(double unscaled_num, double new_min, double new_max, double old_min, double old_max)
+{
+	return ((new_max - new_min) * (unscaled_num - old_min) / (old_max - old_min) + new_min);
+}
+
+int	main(void)
+{
+	int	i;
+
+	i = -1;
+	while (++i < 800)
+		printf("%d -> %f\n", i, scale((double)i, 0, 10, 0, 800));
+}
+```
+
+We can then use our new function to "resize" our window.
+
+Fractal_render:
+
+```c
+
+```
+
+```c
+while y < HEIGHT
+	while x < WEIGHT
+		handle_pixel();
+```

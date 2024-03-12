@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 12:58:23 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/03/11 13:49:47 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/03/12 14:09:05 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@
 
 typedef struct s_img
 {
-	void	*mlx_img;
+	void	*img_ptr;
 	char	*addr;
 	int		bpp;
 	int		line_len;
