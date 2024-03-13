@@ -6,7 +6,7 @@
 #    By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/08 12:03:00 by jqueijo-          #+#    #+#              #
-#    Updated: 2024/03/11 13:46:52 by jqueijo-         ###   ########.fr        #
+#    Updated: 2024/03/13 09:20:59 by jqueijo-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,6 +15,7 @@ NAME = fractol
 SRC =  main.c \
 		string_utils.c \
 		init.c \
+		math_utils.c \
 		# equation.c \
 		# window.c \
 

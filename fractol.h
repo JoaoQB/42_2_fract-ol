@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 12:58:23 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/03/12 14:09:05 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/03/13 09:20:46 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,9 @@ int	mandelbrot_equation(void);
 /* string_utils.c */
 int	ft_strcmp(const char *str, const char *str2);
 void	ft_putstr_fd(char *s, int fd);
+
+/* math_utils.c */
+double	scale(double unscaled_num, double new_min, double new_max, double old_min, double old_max);
 
 /* init.c */
 void	fractal_init(t_fractal *fractal);

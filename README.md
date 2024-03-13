@@ -959,7 +959,7 @@ Different quadratic equations generate a wide range of `Julia Sets`. Filled Juli
 Julia Sets where you can draw a line from one point to any other without lifting your pen are called `Connected Julia Set`.
 Sets where points look like scattered pieces of dust are `Disconnected Julia Set`.
 The `Mandelbrot Set` is constructed by iterating the same quadratic equations used to produce `Julia Sets`: `f(z) = z^2 + c`.
-But instead of iterating all values of `z` for a fixed value of `C`, we fix the starting value of the iteration at 0 and vary `C`.
+But instead of iterating all values of `Z` for a fixed value of `C`, we fix the starting value of the iteration at 0 and vary `C`.
 Values of `C` where iterations of `Z` squared plus `C`' stay bounded are inside the Mandelbrot set. The ones that go to infinity are not.
 We can select points inside the `Mandelbrot Set` to reveal their corresponding `Julia Set`. So the `Mandelbrot Set` is like an atlas or map cataloging all kinds of `Julia Sets`.
 Values of `C` inside the Mandelbrot set are associated with `connected Julia Sets`, and values outside the set correspond with `disconnected Julia Sets` or `disconnected dust`.
@@ -971,7 +971,7 @@ In the equation `f(z) = z^2 + c`, z and c are complex numbers. So how to square 
 = (x + yi) * (x + yi) =
 = x² + xyi + xyi + y²i² = 	// We know that the imaginary number rule is that i² = -1.
 = x² + 2xyi - y² = 			// y² * i² = y² * -1 = -y²
-= x² - y² + 2xyi 			// This is the new complex number, `x² - y²` is the real component and `2xyi` is the imaginary component.
+= (x² - y²) + (2xyi) 			// This is the new complex number, `x² - y²` is the real component and `2xyi` is the imaginary component.
 ```
 
 Now that we have a better understanding of the `mandelbrot set` and `complex numbers`, let's start implementing it in c.
@@ -1085,14 +1085,14 @@ int	main(int argc, char **argv)
 Fractal_init:
 
 ```c
-	start mlx_ptr connection, `mlx_init()`;
-	start new window. `mlx_new_window()`;
-	start new image. `mlx_new_image()`;
-	`mlx_get_data_addr()`;
-	// Safeguard all the above functions against errors.
+start mlx_ptr connection, `mlx_init()`;
+start new window. `mlx_new_window()`;
+start new image. `mlx_new_image()`;
+`mlx_get_data_addr()`;
+// Safeguard all the above functions against errors.
 
-	//events_init() - hooks and listen to events
-	//data_init() - all the zooms and shifts movement
+//events_init() - hooks and listen to events
+//data_init() - all the zooms and shifts movement
 ```
 
 Ok, now to render our fractal. Right now we have a square image, i.e. 800x800 pixels.
@@ -1126,16 +1126,101 @@ int	main(void)
 }
 ```
 
-We can then use our new function to "resize" our window.
+We can then use our new function to "resize" our window. Let's also create a simple struct to hold our complex number values.
+
+```c
+typedef struct s_complex
+{
+	double	x;
+	double	yi;
+} t_complex;
+```
 
 Fractal_render:
 
 ```c
+void	handle_pixel(int x, int yi, t_fractal *fractal)
+{
+	t_complex	z;
+	t_complex	c;
 
+	z.x = 0.0;
+	z.yi = 0.0;
+
+	c.x = scale();
+	c.yi = scale();
+
+	while i < (times you want to iterate z² + c to check if point escaped)
+	{
+		// z = z² +c
+		z = sum_complex(square_complex(z), c);
+		if value escaped
+		{
+			my_pixel_put();
+			return ;
+		}
+	}
+}
 ```
 
 ```c
 while y < HEIGHT
 	while x < WEIGHT
 		handle_pixel();
+```
+
+Let's implement our sum_complex and square_complex function.
+
+```c
+t_complex	sum_complex(t_complex z1, t_complex z2)
+{
+	t_complex	result;
+
+	result.x = z1.x + z2.x;
+	result.yi = z1.yi + z2.yi;
+	return (result);
+}
+```
+
+```c
+t_complex	square_complex(t_complex z)
+{
+	t_complex	result;
+
+	result.x = (z.x * z.x) - (z.yi * z.yi);
+	result.y = 2 * z.x * z.y;
+	return (result);
+}
+```
+
+Ok, now we need to define a few concepts. How many iterations will our function do to check if a point has escaped?
+The more the iterations the higher the image quality, but also the slower the rendering speed.
+That is because some points take a long time to escape the set, so if we iterate our function 20 times a point might not yet escape, and if we do 60 it does.
+That will make our point colored differently according to how fast it escapes the set. So an image with less iterations will have more black (color to represent points bounded in the set), and less gradients (colors to represent points that escape slowly).
+We can add that variable to our fractal struct, like `fractal.iteration_definition`.
+
+We also need to find a way to check if our vale escaped the mandelbrot set confinment.
+We know a point is outside the `mandelbrot set` if our point, after `n iterations`, is out of the set.
+That means that when recursively doing `z = z² + c`, `c` will be our initial value, and when `z` becomes outside the mandelbrot set, our function stops and puts a pixel on that point.
+If the function after `n_iterations` stayed inbound the mandelbrot set, we color it black.
+According to how slowly it escaped we will use different colored gradients, and if it escapes immediately it will have another color to represent that it's a point outside the mandelbrot set.
+
+In our function, we will exploit the `Pythagorean theorem`, `c² = a² + b²`, to check if a point is outside the mandelbrot set, by finding the `hipotenuse` of our `complex number vector`.
+Because our mandelbrot set lives inside `-2 and 2 real` and `-2 and 2 imaginary`, if we have an `hipotenuse` of 2, than we can assume the point is outside the set, and therefore escaped.
+So we know our `hypotenuse` has to be maximum 2. And we know `c² = a² + b²`, or the square of the hypotenuse is equal to the sum of the squares of the two shorter sides.
+So that means that if our hypotenuse is 2, the sum of (z.x * z.x) and (z.yi * z.yi), has to be less than the square of 2, or 4.
+We can also add this new variable, `escape_value` or our `hypotenuse`, in our fractal struct.
+
+If we start implementing this concepts to the functions above.
+
+```c
+	while (i < fractal.iteration_definition) // Times you want to iterate z² + c to check if point escaped
+	{
+		z = sum_complex(square_complex(z), c);// z = z² +c
+		if ((z.x * z.x) + (z.yi * z.yi) > escape_value)// If hypotenuse > 2, value escaped
+		{
+			my_pixel_put();
+			return ;
+		}
+	}
 ```
