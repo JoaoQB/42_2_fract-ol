@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/09 13:46:49 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/03/11 13:32:52 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/03/15 09:13:12 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ int	render(t_data *data)
 	render_background(&data->img, WHITE_PIXEL);
 	render_rect(&data->img, (t_rect){WIDTH - 100, HEIGHT - 100, 100, 100, GREEN_PIXEL});
 	render_rect(&data->img, (t_rect){0, 0, 100, 100, RED_PIXEL});
-	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->img.mlx_img, 0, 0);
+	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->img.img_ptr, 0, 0);
 	return (0);
 }
 
@@ -111,8 +111,8 @@ int	main(void)
 		return (MLX_ERROR);
 	}
 
-	data.img.mlx_img = mlx_new_image(data.mlx_ptr, WIDTH, HEIGHT);
-	data.img.addr = mlx_get_data_addr(data.img.mlx_img, &data.img.bpp, &data.img.line_len, &data.img.endian);
+	data.img.img_ptr = mlx_new_image(data.mlx_ptr, WIDTH, HEIGHT);
+	data.img.addr = mlx_get_data_addr(data.img.img_ptr, &data.img.bpp, &data.img.line_len, &data.img.endian);
 	printf("bpp: %d\n", data.img.bpp);
 	printf("line_len: %d\n", data.img.line_len);
 	printf("endian: %d\n", data.img.endian);
@@ -125,7 +125,7 @@ int	main(void)
 	mlx_loop(data.mlx_ptr);
 
 	/* Exit the loop if there's no window, execute this code */
-	mlx_destroy_image(data.mlx_ptr, data.img.mlx_img);
+	mlx_destroy_image(data.mlx_ptr, data.img.img_ptr);
 	mlx_destroy_display(data.mlx_ptr);
 	free(data.mlx_ptr);
 }

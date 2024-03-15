@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 12:58:23 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/03/13 09:20:46 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/03/15 10:00:53 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,19 @@
 # define BLUE_PIXEL 0x000000FF
 # define WHITE_PIXEL 0x00FFFFFF
 
+#define BLACK 0x000000
+#define WHITE 0xFFFFFF
+#define PURPLE 0x800080
+#define TEAL 0x008080
+#define MAGENTA 0xFF00FF
+#define LIME 0x00FF00
+#define CYAN 0x00FFFF
+#define YELLOW 0xFFFF00
+#define ORANGE 0xFFA500
+#define HOT_PINK 0xFF69B4
+#define AQUAMARINE 0x7FFFD4
+#define INDIGO 0x4B0082
+
 typedef struct s_img
 {
 	void	*img_ptr;
@@ -45,17 +58,18 @@ typedef struct s_img
 typedef struct s_fractal
 {
 	char	*name;
-	void	*mlx_ptr; // mlx_init()
-	void	*win_ptr; // mlx_new_window()
+	void	*mlx_ptr;
+	void	*win_ptr;
 	t_img	img;
-
+	int		iter_definition;
+	int		escape_value;
 	//Hooks member variables
 } t_fractal;
 
 typedef struct s_complex
 {
-	double	real;
-	double	i;
+	double	x;
+	double	yi;
 } t_complex;
 
 typedef struct s_rect
@@ -92,11 +106,15 @@ int	ft_strcmp(const char *str, const char *str2);
 void	ft_putstr_fd(char *s, int fd);
 
 /* math_utils.c */
-double	scale(double unscaled_num, double new_min, double new_max, double old_min, double old_max);
+double	rescale(double unscaled_num, double new_min, double new_max, double old_min, double old_max);
+t_complex	sum_complex(t_complex z1, t_complex z2);
+t_complex	square_complex(t_complex z);
 
 /* init.c */
 void	fractal_init(t_fractal *fractal);
 
+/* render.c */
+void	fractal_render(t_fractal *fractal);
 
 
 

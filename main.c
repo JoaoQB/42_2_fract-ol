@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 14:02:53 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/03/11 13:54:08 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/03/15 10:10:42 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	main(int argc, char **argv)
 	{
 		fractal.name = argv[1];
 		fractal_init(&fractal);
-		// fractal_render(&fractal);
+		fractal_render(&fractal);
 		mlx_loop(fractal.mlx_ptr);
 	}
 	else

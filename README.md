@@ -1023,6 +1023,8 @@ int	main(void)
 }
 ```
 
+## Implementation
+
 For our project we need:
 	Julia and Mandelbrot set.
 	Infinite Zoom
@@ -1165,8 +1167,9 @@ void	handle_pixel(int x, int yi, t_fractal *fractal)
 
 ```c
 while y < HEIGHT
-	while x < WEIGHT
+	while x < WIDTH
 		handle_pixel();
+mlx_put_img_to_window();
 ```
 
 Let's implement our sum_complex and square_complex function.
@@ -1205,7 +1208,9 @@ That means that when recursively doing `z = z² + c`, `c` will be our initial va
 If the function after `n_iterations` stayed inbound the mandelbrot set, we color it black.
 According to how slowly it escaped we will use different colored gradients, and if it escapes immediately it will have another color to represent that it's a point outside the mandelbrot set.
 
-In our function, we will exploit the `Pythagorean theorem`, `c² = a² + b²`, to check if a point is outside the mandelbrot set, by finding the `hipotenuse` of our `complex number vector`.
+For the colors of our mandelbrot set we can also use the `scale` function we've used before. We can use the `n_iterations` as our old range, and do a new range from black to white.
+
+We will exploit the `Pythagorean theorem`, `c² = a² + b²`, to check if a point is outside the mandelbrot set, by finding the `hipotenuse` of our `complex number vector`.
 Because our mandelbrot set lives inside `-2 and 2 real` and `-2 and 2 imaginary`, if we have an `hipotenuse` of 2, than we can assume the point is outside the set, and therefore escaped.
 So we know our `hypotenuse` has to be maximum 2. And we know `c² = a² + b²`, or the square of the hypotenuse is equal to the sum of the squares of the two shorter sides.
 So that means that if our hypotenuse is 2, the sum of (z.x * z.x) and (z.yi * z.yi), has to be less than the square of 2, or 4.
@@ -1219,8 +1224,30 @@ If we start implementing this concepts to the functions above.
 		z = sum_complex(square_complex(z), c);// z = z² +c
 		if ((z.x * z.x) + (z.yi * z.yi) > escape_value)// If hypotenuse > 2, value escaped
 		{
-			my_pixel_put();
+			color = scale(i, BLACK, WHITE, 0, fractal.iteration_definition);
+			img_pix_put(&fractal.img, x, y, color);
 			return ;
 		}
+		i++;
 	}
+	img_pix_put(&fractal.img, x, y, another_color);
 ```
+
+We can also get some color defines in our header file
+
+```c
+#define BLACK 0x000000
+#define WHITE 0xFFFFFF
+#define PURPLE 0x800080
+#define TEAL 0x008080
+#define MAGENTA 0xFF00FF
+#define LIME 0x00FF00
+#define CYAN 0x00FFFF
+#define YELLOW 0xFFFF00
+#define ORANGE 0xFFA500
+#define HOT_PINK 0xFF69B4
+#define AQUAMARINE 0x7FFFD4
+#define INDIGO 0x4B0082
+```
+
+Now that our `mandelbrot set` is implemented, we can start working on our `event handling`.
