@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 13:52:55 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/03/15 10:34:12 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/03/15 14:24:29 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,8 @@ static void	handle_pixel(int x, int y, t_fractal *fractal)
 	i = 0;
 	z.x = 0;
 	z.yi = 0;
-	c.x = rescale(x, -2, 2, 0, WIDTH);
-	c.yi = rescale(y, 2, -2, HEIGHT, 0);
+	c.x = (rescale(x, -2, 2, 0, WIDTH) * fractal->zoom) + fractal->shift_x;
+	c.yi = (rescale(y, 2, -2, HEIGHT, 0) * fractal->zoom) + fractal->shift_y;
 
 	while (i < fractal->iter_definition)
 	{

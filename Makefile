@@ -6,7 +6,7 @@
 #    By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/08 12:03:00 by jqueijo-          #+#    #+#              #
-#    Updated: 2024/03/15 09:58:41 by jqueijo-         ###   ########.fr        #
+#    Updated: 2024/03/15 12:22:36 by jqueijo-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,8 +17,7 @@ SRC =  main.c \
 		init.c \
 		render.c \
 		math_utils.c \
-		# equation.c \
-		# window.c \
+		events.c \
 
 CC = cc
 MINILIBX_FLAGS= -Lminilibx-linux -l:libmlx_Linux.a -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz

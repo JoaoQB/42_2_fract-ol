@@ -1251,3 +1251,5 @@ We can also get some color defines in our header file
 ```
 
 Now that our `mandelbrot set` is implemented, we can start working on our `event handling`.
+
+We have three `mlx_hooks`: `Keypress`, `Buttonpress` and `DestroyNotify` (clicking the x symbol on the window).

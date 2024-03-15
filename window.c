@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/09 13:46:49 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/03/15 09:13:12 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/03/15 12:40:30 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	encode_rgb(uint8_t red, uint8_t green, uint8_t blue)
 	return (red << 16 | green << 8 | blue);
 }
 
-int	handle_keypress(int keysym, t_data *data)
+int	handle_keypress2(int keysym, t_data *data)
 {
 	if (keysym == XK_Escape)
 	{
@@ -120,7 +120,7 @@ int	main(void)
 
 	/* Setup Hooks */
 	mlx_loop_hook(data.mlx_ptr, &render, &data);
-	mlx_hook(data.win_ptr, KeyPress, KeyPressMask, &handle_keypress, &data);
+	mlx_hook(data.win_ptr, KeyPress, KeyPressMask, &handle_keypress2, &data);
 
 	mlx_loop(data.mlx_ptr);
 
