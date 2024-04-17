@@ -20,10 +20,16 @@ https://www.youtube.com/watch?v=dctJ7ISkU-4
 	Julia Sets, and how they relate to The Mandelbrot Set | DONE
 
 https://www.youtube.com/watch?v=ANLW1zYbLcs
-	fractol: render beautiful fractals in C (mandelbrot and julia set) | HERE
+	fractol: render beautiful fractals in C (mandelbrot and julia set) | DONE
+
+https://www.shadertoy.com/view/4df3Rn
+	IMPORTANT!
+	Escrever a parte das contas constantes numa array static
+	Por cap no máximo de iteraçoes da equação.++
 
 https://www.youtube.com/watch?v=fWP29aVVycA
 	Mandelbrot Set In C++ with SDL2 Tutorial
 
 https://www.freecodecamp.org/news/what-is-endianness-big-endian-vs-little-endian/
 	what is endianness | DONE
+

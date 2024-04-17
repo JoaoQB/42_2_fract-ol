@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 13:41:20 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/03/15 13:49:30 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/04/17 12:07:38 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,9 @@ typedef struct s_fractal
 	int		escape_value;
 	double	shift_x;
 	double	shift_y;
+	double	zoom;
+	double	julia_x;
+	double	julia_yi;
 } t_fractal;
 
 typedef struct s_complex
@@ -90,24 +93,13 @@ typedef struct s_data
 	t_img	img;
 } t_data;
 
-/* window.c */
-int		encode_rgb(uint8_t red, uint8_t green, uint8_t blue);
-int		handle_keypress2(int keysym, t_data *data);
-void	img_pix_put_basic(t_img *img, int x, int y, int color);
-void	img_pix_put(t_img *img, int x, int y, int color);
-void	render_background(t_img *img, int color);
-int		render_rect(t_img *img, t_rect rect);
-int		render(t_data *data);
-
-/* equation.c */
-int	mandelbrot_equation(void);
-
 /* string_utils.c */
-int	ft_strcmp(const char *str, const char *str2);
+int		ft_strcmp(const char *str, const char *str2);
 void	ft_putstr_fd(char *s, int fd);
+double	ft_atodbl(char *s);
 
 /* math_utils.c */
-double	rescale(double unscaled_num, double new_min, double new_max, double old_min, double old_max);
+double		rescale(double unscaled_num, double new_min, double new_max, double old_min, double old_max);
 t_complex	sum_complex(t_complex z1, t_complex z2);
 t_complex	square_complex(t_complex z);
 
@@ -120,30 +112,47 @@ void	fractal_init(t_fractal *fractal);
 void	fractal_render(t_fractal *fractal);
 
 /* events.c */
-int	handle_keypress(int keysym, t_fractal *fractal);
-
-
-
+int		handle_keypress(int keysym, t_fractal *fractal);
+int		handle_close(t_fractal *fractal);
+int		handle_mouse(int button, int x, int y, t_fractal  *fractal);
 
 #endif
 
+int	handle_mouse(int button, int x, int y, t_fractal *fractal)
+{
+	if (button == Button4)
+		fractal->zoom *= 0.95;
+	else if (button == Button5)
+		fractal->zoom *= 1.05;
+	fractal_render(fractal);
+	return (0);
+}
+
+int	handle_close(t_fractal *fractal)
+{
+	mlx_destroy_image(fractal->mlx_ptr, fractal->img.img_ptr);
+	mlx_destroy_window(fractal->mlx_ptr, fractal->win_ptr);
+	mlx_destroy_display(fractal->mlx_ptr);
+	free(fractal->mlx_ptr);
+	exit(EXIT_SUCCESS);
+}
+
 int	handle_keypress(int keysym, t_fractal *fractal)
 {
-	// if (keysym == XK_Escape)
-	// 	handle_close(fractal);
-	if (keysym == XK_Left)
-		fractal->shift_x += 0.05;
+	if (keysym == XK_Escape)
+		handle_close(fractal);
+	else if (keysym == XK_Left)
+		fractal->shift_x += (0.05 * fractal->zoom);
 	else if (keysym == XK_Right)
-		fractal->shift_x -= 0.05;
-	// else if (keysym == XK_Up)
-	// 	??
-	// else if (keysym == XK_Down)
-	// 	??
+		fractal->shift_x -= (0.05 * fractal->zoom);
+	else if (keysym == XK_Up)
+		fractal->shift_y += (0.05 * fractal->zoom);
+	else if (keysym == XK_Down)
+		fractal->shift_y -= (0.05 * fractal->zoom);
 	else if (keysym == XK_plus)
 		fractal->iter_definition += 10;
 	else if (keysym == XK_minus)
 		fractal->iter_definition -= 10;
-
 	fractal_render(fractal);
 	return (0);
 }
@@ -161,13 +170,17 @@ static void	data_init(t_fractal *fractal)
 	fractal->escape_value = 4;
 	fractal->shift_x = 0.0;
 	fractal->shift_y = 0.0;
+	fractal->zoom = 1.0;
 }
 
 static void	events_init(t_fractal *fractal)
 {
-	mlx_hook(fractal->win_ptr, KeyPress, KeyPressMask, &handle_keypress, fractal);
-	// mlx_hook(fractal->win_ptr, ButtonPress, ButtonPressMask, &handle_mouse, &fractal);// TODO
-	// mlx_hook(fractal->win_ptr, DestroyNotify, StructureNotifyMask, &handle_close, &fractal);// TODO
+	mlx_hook(fractal->win_ptr, KeyPress,
+		KeyPressMask, handle_keypress, fractal);
+	mlx_hook(fractal->win_ptr, ButtonPress,
+		ButtonPressMask, handle_mouse, fractal);
+	mlx_hook(fractal->win_ptr, DestroyNotify,
+		StructureNotifyMask, handle_close, fractal);
 }
 
 void	fractal_init(t_fractal *fractal)
@@ -193,8 +206,6 @@ void	fractal_init(t_fractal *fractal)
 	}
 	fractal->img.addr = mlx_get_data_addr(fractal->img.img_ptr,
 			&fractal->img.bpp, &fractal->img.line_len, &fractal->img.endian);
-
-
 	events_init(fractal);
 	data_init(fractal);
 }
@@ -241,6 +252,20 @@ static void	my_pix_put(t_img *img, int x, int y, int color)
 	}
 }
 
+static void julia_vs_mandel(t_complex *z, t_complex *c, t_fractal *fractal)
+{
+	if (!ft_strcmp(fractal->name, "julia"))
+	{
+		c->x = fractal->julia_x;
+		c->yi = fractal->julia_yi;
+	}
+	else
+	{
+		c->x = z->x;
+		c->yi = z->yi;
+	}
+}
+
 static void	handle_pixel(int x, int y, t_fractal *fractal)
 {
 	t_complex	z;
@@ -249,11 +274,9 @@ static void	handle_pixel(int x, int y, t_fractal *fractal)
 	int			color;
 
 	i = 0;
-	z.x = 0;
-	z.yi = 0;
-	c.x = rescale(x, -2, 2, 0, WIDTH) + fractal->shift_x;
-	c.yi = rescale(y, 2, -2, HEIGHT, 0) + fractal->shift_y;
-
+	z.x = (rescale(x, -2, 2, 0, WIDTH) * fractal->zoom) + fractal->shift_x;
+	z.yi = (rescale(y, 2, -2, HEIGHT, 0) * fractal->zoom) + fractal->shift_y;
+	julia_vs_mandel(&z, &c, fractal);
 	while (i < fractal->iter_definition)
 	{
 		z = sum_complex(square_complex(z), c);
@@ -313,21 +336,55 @@ void	ft_putstr_fd(char *s, int fd)
 	}
 }
 
+double	ft_atodbl(char *s)
+{
+	long	int_part;
+	double	fract_part;
+	double	pow;
+	int		sign;
+
+	int_part = 0;
+	fract_part = 0;
+	pow = 1;
+	sign = 1;
+	while ((*s >= '\t' && *s <= '\r') || 32 == *s)
+		++s;
+	while ('+' == *s || '-' == *s)
+		if ('-' == *s++)
+			sign = -sign;
+	while ((*s >= '0' && *s <= '9') && *s && *s != '.')
+		int_part = (int_part * 10) + (*s++ - '0');
+	if ('.' == *s)
+		++s;
+	while ((*s >= '0' && *s <= '9') && *s)
+	{
+		pow /= 10;
+		fract_part = fract_part + (*s++ - '0') * pow;
+	}
+	return ((int_part + fract_part) * sign);
+}
+
 int	main(int argc, char **argv)
 {
 	t_fractal	fractal;
 
 	if ((argc == 2 && !ft_strcmp(argv[1], "mandelbrot"))
-		|| (argc == 4 && !ft_strcmp(argv[1], "julia")))
+		|| (!ft_strcmp(argv[1], "julia")) && (argc == 2 || argc == 4))
 	{
 		fractal.name = argv[1];
+		if (argv[2] && argv[3])
+		{
+			fractal.julia_x = ft_atodbl(argv[2]);
+			fractal.julia_yi = ft_atodbl(argv[3]);
+		}
+		else
+		{
+			fractal.julia_x = 0.285;
+			fractal.julia_yi = 0.01;
+		}
 		fractal_init(&fractal);
 		fractal_render(&fractal);
-		printf("rendered");
 		mlx_loop(fractal.mlx_ptr);
-		mlx_destroy_image(fractal.mlx_ptr, fractal.img.img_ptr);
-		mlx_destroy_display(fractal.mlx_ptr);
-		free(fractal.mlx_ptr);
 	}
 	else
 	{

@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 12:58:23 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/03/15 14:22:22 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/04/17 12:05:20 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,8 @@ typedef struct s_fractal
 	double	shift_x;
 	double	shift_y;
 	double	zoom;
+	double	julia_x;
+	double	julia_yi;
 } t_fractal;
 
 typedef struct s_complex
@@ -91,21 +93,10 @@ typedef struct s_data
 	t_img	img;
 } t_data;
 
-/* window.c */
-int		encode_rgb(uint8_t red, uint8_t green, uint8_t blue);
-int		handle_keypress2(int keysym, t_data *data);
-void	img_pix_put_basic(t_img *img, int x, int y, int color);
-void	img_pix_put(t_img *img, int x, int y, int color);
-void	render_background(t_img *img, int color);
-int		render_rect(t_img *img, t_rect rect);
-int		render(t_data *data);
-
-/* equation.c */
-int		mandelbrot_equation(void);
-
 /* string_utils.c */
 int		ft_strcmp(const char *str, const char *str2);
 void	ft_putstr_fd(char *s, int fd);
+double	ft_atodbl(char *s);
 
 /* math_utils.c */
 double		rescale(double unscaled_num, double new_min, double new_max, double old_min, double old_max);
@@ -124,7 +115,5 @@ void	fractal_render(t_fractal *fractal);
 int		handle_keypress(int keysym, t_fractal *fractal);
 int		handle_close(t_fractal *fractal);
 int		handle_mouse(int button, int x, int y, t_fractal  *fractal);
-
-
 
 #endif

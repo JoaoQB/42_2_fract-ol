@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 13:18:33 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/03/15 14:23:41 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/04/17 10:45:45 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,12 @@ static void	data_init(t_fractal *fractal)
 
 static void	events_init(t_fractal *fractal)
 {
-	mlx_hook(fractal->win_ptr, KeyPress, KeyPressMask, handle_keypress, fractal);
-	mlx_hook(fractal->win_ptr, ButtonPress, ButtonPressMask, handle_mouse, fractal);
-	mlx_hook(fractal->win_ptr, DestroyNotify, StructureNotifyMask, handle_close, fractal);
+	mlx_hook(fractal->win_ptr, KeyPress,
+		KeyPressMask, handle_keypress, fractal);
+	mlx_hook(fractal->win_ptr, ButtonPress,
+		ButtonPressMask, handle_mouse, fractal);
+	mlx_hook(fractal->win_ptr, DestroyNotify,
+		StructureNotifyMask, handle_close, fractal);
 }
 
 void	fractal_init(t_fractal *fractal)
@@ -57,8 +60,6 @@ void	fractal_init(t_fractal *fractal)
 	}
 	fractal->img.addr = mlx_get_data_addr(fractal->img.img_ptr,
 			&fractal->img.bpp, &fractal->img.line_len, &fractal->img.endian);
-
-
 	events_init(fractal);
 	data_init(fractal);
 }

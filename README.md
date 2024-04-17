@@ -315,6 +315,86 @@ int	main(void)
 
 Voila!!!
 
+The following function is the final pollock version using what I learned afterwards. More info in the rest of the readme.
+
+```c
+#include "minilibx-linux/mlx.h"
+#include <stdlib.h>
+#include <stdint.h>
+#include <time.h>
+#include <X11/keysym.h>
+
+#define WIDTH 500
+#define HEIGHT 500
+
+typedef struct s_data
+{
+	void	*mlx_ptr;
+	void	*win_ptr;
+} t_data;
+
+int	encode_rgb(uint8_t red, uint8_t green, uint8_t blue)
+{
+	return (red << 16 | green << 8 | blue);
+}
+
+int	handle_no_event(void *data)
+{
+	return (0);
+}
+
+int	handle_input(int keysym, t_data *data)
+{
+	if (keysym == XK_Escape)
+		mlx_destroy_window(data->mlx_ptr, data->win_ptr);
+	return (0);
+}
+
+int	main(void)
+{
+	t_data	data;
+	int		x;
+	int		y;
+	int		encoded_color;
+
+	srand(time(NULL));
+	data.mlx_ptr = mlx_init();
+	data.win_ptr = mlx_new_window(data.mlx_ptr,
+								WIDTH,
+								HEIGHT,
+								"my first window");
+	x = 0;
+	y = HEIGHT * 0.1;
+	while (y < HEIGHT * 0.9)
+	{
+		x = WIDTH * 0.1;
+		while (x < WIDTH * 0.9)
+		{
+			mlx_pixel_put(data.mlx_ptr,
+							data.win_ptr,
+							x,
+							y,
+							rand() % 0x1000000);
+			x++;
+		}
+		y++;
+	}
+	encoded_color = encode_rgb(255, 125, 64);
+	mlx_string_put(data.mlx_ptr,
+					data.win_ptr,
+					WIDTH * 0.8,
+					HEIGHT * 0.95,
+					encoded_color,
+					"My pollock");
+	mlx_loop_hook(data.mlx_ptr, &handle_no_event, &data);
+	mlx_key_hook(data.win_ptr, &handle_input, &data);
+
+	mlx_loop(data.mlx_ptr);
+	/* Exit the loop if there's no window, execute this code */
+	mlx_destroy_display(data.mlx_ptr);
+	free(data.mlx_ptr);
+}
+```
 
 ## Leaks and properly closing the program.
 
@@ -510,7 +590,83 @@ int	encode_rgb(uint8_t red, uint8_t green, uint8_t blue)
 
 For example:
 
-```c
+```c#include "minilibx-linux/mlx.h"
+#include <stdlib.h>
+#include <stdint.h>
+#include <time.h>
+#include <X11/keysym.h>
+
+#define WIDTH 500
+#define HEIGHT 500
+
+typedef struct s_data
+{
+	void	*mlx_ptr;
+	void	*win_ptr;
+} t_data;
+
+int	encode_rgb(uint8_t red, uint8_t green, uint8_t blue)
+{
+	return (red << 16 | green << 8 | blue);
+}
+
+int	handle_no_event(void *data)
+{
+	return (0);
+}
+
+int	handle_input(int keysym, t_data *data)
+{
+	if (keysym == XK_Escape)
+		mlx_destroy_window(data->mlx_ptr, data->win_ptr);
+	return (0);
+}
+
+int	main(void)
+{
+	t_data	data;
+	int		x;
+	int		y;
+	int		encoded_color;
+
+	srand(time(NULL));
+	data.mlx_ptr = mlx_init();
+	data.win_ptr = mlx_new_window(data.mlx_ptr,
+								WIDTH,
+								HEIGHT,
+								"my first window");
+	x = 0;
+	y = HEIGHT * 0.1;
+	while (y < HEIGHT * 0.9)
+	{
+		x = WIDTH * 0.1;
+		while (x < WIDTH * 0.9)
+		{
+			mlx_pixel_put(data.mlx_ptr,
+							data.win_ptr,
+							x,
+							y,
+							rand() % 0x1000000);
+			x++;
+		}
+		y++;
+	}
+	encoded_color = encode_rgb(255, 125, 64);
+	mlx_string_put(data.mlx_ptr,
+					data.win_ptr,
+					WIDTH * 0.8,
+					HEIGHT * 0.95,
+					encoded_color,
+					"My pollock");
+	mlx_loop_hook(data.mlx_ptr, &handle_no_event, &data);
+	mlx_key_hook(data.win_ptr, &handle_input, &data);
+
+	mlx_loop(data.mlx_ptr);
+	/* Exit the loop if there's no window, execute this code */
+	mlx_destroy_display(data.mlx_ptr);
+	free(data.mlx_ptr);
+}
+
 int	encode_rgb(uint8_t red, uint8_t green, uint8_t blue)
 {
 	return (red << 16 | green << 8 | blue);
@@ -1253,3 +1409,136 @@ We can also get some color defines in our header file
 Now that our `mandelbrot set` is implemented, we can start working on our `event handling`.
 
 We have three `mlx_hooks`: `Keypress`, `Buttonpress` and `DestroyNotify` (clicking the x symbol on the window).
+
+`Keypress` handles the arrow keys, which move the image, esc which closes the window and plus and minus which increase or decrease the number of iterations of our mandelbrot/julia iterative equation.
+
+`Buttonpress` will handle the mouse wheel, which zooms in and out of our fractal.
+
+And finally `DestroyNotify` will handle closing the window when the `X` is clicked.
+
+## Implementing Juliaset
+
+In our mandelbrot set, z initially is (0, 0) and c is the actual point. On the contrary in the `Julia Set`, c is a constant and z is the actual pixel point.
+
+```c
+MANDELBROT
+
+z = z² + c
+z initially is (0, 0)
+c is the actual point
+
+JULIA
+
+./fractol julia <real> <i>
+z = pixel_point + constant c
+```
+
+Because we will accept the value for c in our julia set as a parameter defined when running ./fractol, we first need to do a kind of `atoi` but instead of alpha to integer, we need an alpha to double, `atodbl`.
+
+```c
+double	ft_atodbl(char *s)
+{
+	long	int_part;
+	double	fract_part;
+	double	pow;
+	int		sign;
+
+	int_part = 0;
+	fract_part = 0;
+	pow = 1;
+	sign = 1;
+	while ((*s >= '\t' && *s <= '\r') || 32 == *s)
+		++s;
+	while ('+' == *s || '-' == *s)
+		if ('-' == *s++)
+			sign = -sign;
+	while ((*s >= '0' && *s <= '9') && *s && *s != '.')
+		int_part = (int_part * 10) + (*s++ - '0');
+	if ('.' == *s)
+		++s;
+	while ((*s >= '0' && *s <= '9') && *s)
+	{
+		pow /= 10;
+		fract_part = fract_part + (*s++ - '0') * pow;
+	}
+	return ((int_part + fract_part) * sign);
+}
+```
+
+Now we should alter our `handle_pixel` function to implement the Julia set. If we see, our first iteration of the mandelbrot equation is `z = z² + c`, but because z = 0, that is the same as `z = c + c`. So we don't need to define z as 0.
+We will also create another function to correctly handle if we are doing Mandlebrot and z is initially 0 or if doing Julia and c is constant.
+
+Before
+```c
+static void	handle_pixel(int x, int y, t_fractal *fractal)
+{
+	t_complex	z;
+	t_complex	c;
+	int			i;
+	int			color;
+
+	i = 0;
+	z.x = 0;
+	z.yi = 0;
+	c.x = (rescale(x, -2, 2, 0, WIDTH) * fractal->zoom) + fractal->shift_x;
+	c.yi = (rescale(y, 2, -2, HEIGHT, 0) * fractal->zoom) + fractal->shift_y;
+	while (i < fractal->iter_definition)
+	{
+		z = sum_complex(square_complex(z), c);
+		if ((z.x * z.x) + (z.yi * z.yi) > fractal->escape_value)
+		{
+			color = rescale(i, WHITE, BLACK, 0, fractal->iter_definition);
+			my_pix_put(&fractal->img, x, y, color);
+			return ;
+		}
+		i++;
+	}
+	my_pix_put(&fractal->img, x, y, BLACK);
+}
+```
+
+After
+```c
+static void	handle_pixel(int x, int y, t_fractal *fractal)
+{
+	t_complex	z;
+	t_complex	c;
+	int			i;
+	int			color;
+
+	i = 0;
+	z.x = (rescale(x, -2, 2, 0, WIDTH) * fractal->zoom) + fractal->shift_x;
+	z.yi = (rescale(y, 2, -2, HEIGHT, 0) * fractal->zoom) + fractal->shift_y;
+	julia_vs_mandel(&z, &c, fractal);
+	while (i < fractal->iter_definition)
+	{
+		z = sum_complex(square_complex(z), c);
+		if ((z.x * z.x) + (z.yi * z.yi) > fractal->escape_value)
+		{
+			color = rescale(i, WHITE, BLACK, 0, fractal->iter_definition);
+			my_pix_put(&fractal->img, x, y, color);
+			return ;
+		}
+		i++;
+	}
+	my_pix_put(&fractal->img, x, y, BLACK);
+}
+```
+
+`Julia vs Mandelbrot`
+
+```c
+static void julia_vs_mandel(t_complex *z, t_complex *c, t_fractal *fractal)
+{
+	if (!ft_strcmp(fractal->name, "julia"))
+	{
+		c->x = fractal->julia_x;
+		c->yi = fractal->julia_yi;
+	}
+	else
+	{
+		c->x = z->x;
+		c->yi = z->yi;
+	}
+}
+```

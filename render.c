@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 13:52:55 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/03/15 14:24:29 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/04/17 11:34:54 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,20 @@ static void	my_pix_put(t_img *img, int x, int y, int color)
 	}
 }
 
+static void julia_vs_mandel(t_complex *z, t_complex *c, t_fractal *fractal)
+{
+	if (!ft_strcmp(fractal->name, "julia"))
+	{
+		c->x = fractal->julia_x;
+		c->yi = fractal->julia_yi;
+	}
+	else
+	{
+		c->x = z->x;
+		c->yi = z->yi;
+	}
+}
+
 static void	handle_pixel(int x, int y, t_fractal *fractal)
 {
 	t_complex	z;
@@ -37,11 +51,9 @@ static void	handle_pixel(int x, int y, t_fractal *fractal)
 	int			color;
 
 	i = 0;
-	z.x = 0;
-	z.yi = 0;
-	c.x = (rescale(x, -2, 2, 0, WIDTH) * fractal->zoom) + fractal->shift_x;
-	c.yi = (rescale(y, 2, -2, HEIGHT, 0) * fractal->zoom) + fractal->shift_y;
-
+	z.x = (rescale(x, -2, 2, 0, WIDTH) * fractal->zoom) + fractal->shift_x;
+	z.yi = (rescale(y, 2, -2, HEIGHT, 0) * fractal->zoom) + fractal->shift_y;
+	julia_vs_mandel(&z, &c, fractal);
 	while (i < fractal->iter_definition)
 	{
 		z = sum_complex(square_complex(z), c);

@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 14:02:53 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/03/15 14:02:37 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/04/17 11:39:12 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,19 @@ int	main(int argc, char **argv)
 	t_fractal	fractal;
 
 	if ((argc == 2 && !ft_strcmp(argv[1], "mandelbrot"))
-		|| (argc == 4 && !ft_strcmp(argv[1], "julia")))
+		|| (!ft_strcmp(argv[1], "julia")) && (argc == 2 || argc == 4))
 	{
 		fractal.name = argv[1];
+		if (argv[2] && argv[3])
+		{
+			fractal.julia_x = ft_atodbl(argv[2]);
+			fractal.julia_yi = ft_atodbl(argv[3]);
+		}
+		else
+		{
+			fractal.julia_x = 0.285;
+			fractal.julia_yi = 0.01;
+		}
 		fractal_init(&fractal);
 		fractal_render(&fractal);
 		mlx_loop(fractal.mlx_ptr);

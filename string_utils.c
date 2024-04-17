@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 14:27:28 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/03/11 12:58:28 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/04/17 10:47:22 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,4 +33,32 @@ void	ft_putstr_fd(char *s, int fd)
 		write(fd, s, sizeof(char));
 		ft_putstr_fd(s + 1, fd);
 	}
+}
+
+double	ft_atodbl(char *s)
+{
+	long	int_part;
+	double	fract_part;
+	double	pow;
+	int		sign;
+
+	int_part = 0;
+	fract_part = 0;
+	pow = 1;
+	sign = 1;
+	while ((*s >= '\t' && *s <= '\r') || 32 == *s)
+		++s;
+	while ('+' == *s || '-' == *s)
+		if ('-' == *s++)
+			sign = -sign;
+	while ((*s >= '0' && *s <= '9') && *s && *s != '.')
+		int_part = (int_part * 10) + (*s++ - '0');
+	if ('.' == *s)
+		++s;
+	while ((*s >= '0' && *s <= '9') && *s)
+	{
+		pow /= 10;
+		fract_part = fract_part + (*s++ - '0') * pow;
+	}
+	return ((int_part + fract_part) * sign);
 }
