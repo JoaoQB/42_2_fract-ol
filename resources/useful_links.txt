@@ -30,6 +30,12 @@ https://www.shadertoy.com/view/4df3Rn
 https://www.youtube.com/watch?v=fWP29aVVycA
 	Mandelbrot Set In C++ with SDL2 Tutorial
 
+https://github.com/rajh-phuyal/42fract_ol
+
+https://github.com/pbondoer/42-fractol
+
+https://github.com/jceron-g/fractol
+
 https://www.freecodecamp.org/news/what-is-endianness-big-endian-vs-little-endian/
 	what is endianness | DONE
 
