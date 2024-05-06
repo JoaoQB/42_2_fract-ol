@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 13:41:20 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/04/17 12:07:38 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/05/03 11:00:19 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 
 # define WIDTH 800
 # define HEIGHT 800
+# define MAX_ITER 512
 
 # define RED_PIXEL 0x00FF0000
 # define GREEN_PIXEL 0x0000FF00
@@ -149,9 +150,9 @@ int	handle_keypress(int keysym, t_fractal *fractal)
 		fractal->shift_y += (0.05 * fractal->zoom);
 	else if (keysym == XK_Down)
 		fractal->shift_y -= (0.05 * fractal->zoom);
-	else if (keysym == XK_plus)
+	else if (keysym == XK_plus && fractal->iter_definition <= 502)
 		fractal->iter_definition += 10;
-	else if (keysym == XK_minus)
+	else if (keysym == XK_minus && fractal->iter_definition >= 10)
 		fractal->iter_definition -= 10;
 	fractal_render(fractal);
 	return (0);

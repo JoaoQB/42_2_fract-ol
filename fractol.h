@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 12:58:23 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/04/17 12:05:20 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/05/06 15:40:02 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 
 # define WIDTH 800
 # define HEIGHT 800
+# define MAX_ITER 512
 
 # define RED_PIXEL 0x00FF0000
 # define GREEN_PIXEL 0x0000FF00
