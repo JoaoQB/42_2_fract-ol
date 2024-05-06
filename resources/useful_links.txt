@@ -22,12 +22,12 @@ https://www.youtube.com/watch?v=dctJ7ISkU-4
 https://www.youtube.com/watch?v=ANLW1zYbLcs
 	fractol: render beautiful fractals in C (mandelbrot and julia set) | DONE
 
-https://www.youtube.com/watch?v=fWP29aVVycA
+https://www.youtube.com/watch?v=fWP29aVVycA | DONE
 	Mandelbrot Set In C++ with SDL2 Tutorial
 
-http://www.karlsims.com/julia.html
+http://www.karlsims.com/julia.html | DONE
 
-https://jonisalonen.com/2013/lets-draw-the-mandelbrot-set/
+https://jonisalonen.com/2013/lets-draw-the-mandelbrot-set/ | DONE
 
 https://lodev.org/cgtutor/juliamandelbrot.html
 
@@ -37,7 +37,6 @@ https://www.shadertoy.com/view/4df3Rn
 	IMPORTANT!
 	Escrever a parte das contas constantes numa array static
 	Por cap no máximo de iteraçoes da equação.++
-
 
 https://www.freecodecamp.org/news/what-is-endianness-big-endian-vs-little-endian/
 	what is endianness | DONE
