@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 13:18:33 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/04/17 10:45:45 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/05/08 11:17:25 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,10 @@ static void	data_init(t_fractal *fractal)
 	fractal->shift_x = 0.0;
 	fractal->shift_y = 0.0;
 	fractal->zoom = 1.0;
+	fractal->re_min = -2;
+	fractal->re_max = 2;
+	fractal->im_min = 2;
+	fractal->im_max = -2;
 }
 
 static void	events_init(t_fractal *fractal)

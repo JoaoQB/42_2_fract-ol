@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 12:58:23 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/05/06 15:40:02 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/05/08 11:16:10 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,10 @@ typedef struct s_fractal
 	double	zoom;
 	double	julia_x;
 	double	julia_yi;
+	double	re_min;
+	double	re_max;
+	double	im_min;
+	double	im_max;
 } t_fractal;
 
 typedef struct s_complex
