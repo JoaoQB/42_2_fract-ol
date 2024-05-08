@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 12:58:23 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/05/08 13:01:05 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/05/08 13:12:04 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,13 @@
 # include <X11/X.h> // Constant definitions for Xlib functions
 
 # define ERROR_MESSAGE "Please enter:\n\n\
-./fractol mandelbrot for Mandelbrot set\n\
-./fractol julia for pre-determined Julia set\n\
-./fractol julia <real_value> <imag_value> for a custom Julia set\n\n\
+'./fractol mandelbrot' for Mandelbrot set\n\
+'./fractol julia' for pre-determined Julia set\n\
+'./fractol julia <re_value> <im_value>' for a custom Julia set\n\n\
 Press + and - to change the number of iterations\n\
 Use the mouse wheel to zoom in and out\n\
-Use the arrow keys to move the image\n"
+Use the arrow keys to move the image\n\
+Press c to change the color range\n"
 
 # define WIDTH 800
 # define HEIGHT 800
