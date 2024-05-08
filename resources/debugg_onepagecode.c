@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 13:41:20 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/05/03 11:00:19 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/05/08 13:07:04 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,35 +17,35 @@
 # include <stdint.h> // Define integer types, limits, macros
 # include <stdlib.h> // Memory allocation
 # include <stdio.h> // Standard input and output, perror function / Debugging
-# include <math.h>
+# include <math.h> // math functions
 # include <unistd.h> // System calls
 # include <X11/keysym.h> // Predefined key symbols corresponding to keycodes
 # include <X11/X.h> // Constant definitions for Xlib functions
 
-# define ERROR_MESSAGE "Please enter \n\t\"./fractol mandelbrot\" or \n\t\"./fractol julia <n value> <ni value>\"\n"
-# define MLX_ERROR 1
+# define ERROR_MESSAGE "Please enter:\n\n\
+./fractol mandelbrot for Mandelbrot set\n\
+./fractol julia for pre-determined Julia set\n\
+./fractol julia <real_value> <imag_value> for a custom Julia set\n\n\
+Press + and - to change the number of iterations\n\
+Use the mouse wheel to zoom in and out\n\
+Use the arrow keys to move the image\n"
 
 # define WIDTH 800
 # define HEIGHT 800
 # define MAX_ITER 512
 
-# define RED_PIXEL 0x00FF0000
-# define GREEN_PIXEL 0x0000FF00
-# define BLUE_PIXEL 0x000000FF
-# define WHITE_PIXEL 0x00FFFFFF
-
-#define BLACK 0x000000
-#define WHITE 0xFFFFFF
-#define PURPLE 0x800080
-#define TEAL 0x008080
-#define MAGENTA 0xFF00FF
-#define LIME 0x00FF00
-#define CYAN 0x00FFFF
-#define YELLOW 0xFFFF00
-#define ORANGE 0xFFA500
-#define HOT_PINK 0xFF69B4
-#define AQUAMARINE 0x7FFFD4
-#define INDIGO 0x4B0082
+# define BLACK 0x000000
+# define WHITE 0xFFFFFF
+# define PURPLE 0x800080
+# define TEAL 0x008080
+# define MAGENTA 0xFF00FF
+# define LIME 0x00FF00
+# define CYAN 0x00FFFF
+# define YELLOW 0xFFFF00
+# define ORANGE 0xFFA500
+# define HOT_PINK 0xFF69B4
+# define AQUAMARINE 0x7FFFD4
+# define INDIGO 0x4B0082
 
 typedef struct s_img
 {
@@ -54,7 +54,7 @@ typedef struct s_img
 	int		bpp;
 	int		line_len;
 	int		endian;
-} t_img;
+}	t_img;
 
 typedef struct s_fractal
 {
@@ -69,35 +69,22 @@ typedef struct s_fractal
 	double	zoom;
 	double	julia_x;
 	double	julia_yi;
-} t_fractal;
+	double	fractal_type;
+	double	cmin;
+	double	cmax;
+	int		color_range;
+}	t_fractal;
 
 typedef struct s_complex
 {
 	double	x;
 	double	yi;
-} t_complex;
-
-typedef struct s_rect
-{
-	int	x;
-	int	y;
-	int	width;
-	int	height;
-	int	color;
-} t_rect;
-
-
-typedef struct s_data
-{
-	void	*mlx_ptr;
-	void	*win_ptr;
-	t_img	img;
-} t_data;
+}	t_complex;
 
 /* string_utils.c */
-int		ft_strcmp(const char *str, const char *str2);
-void	ft_putstr_fd(char *s, int fd);
-double	ft_atodbl(char *s);
+int			ft_strcmp(const char *str, const char *str2);
+void		ft_putstr_fd(char *s, int fd);
+double		ft_atodbl(char *s);
 
 /* math_utils.c */
 double		rescale(double unscaled_num, double new_min, double new_max, double old_min, double old_max);
@@ -105,19 +92,18 @@ t_complex	sum_complex(t_complex z1, t_complex z2);
 t_complex	square_complex(t_complex z);
 
 /* init.c */
-void	fractal_init(t_fractal *fractal);
-// void	data_init(t_fractal *fractal);
-// void	events_init(t_fractal *fractal);
+void		fractal_init(t_fractal *fractal);
 
 /* render.c */
-void	fractal_render(t_fractal *fractal);
+void		fractal_render(t_fractal *fractal);
 
 /* events.c */
-int		handle_keypress(int keysym, t_fractal *fractal);
-int		handle_close(t_fractal *fractal);
-int		handle_mouse(int button, int x, int y, t_fractal  *fractal);
+int			handle_keypress(int keysym, t_fractal *fractal);
+int			handle_close(t_fractal *fractal);
+int			handle_mouse(int button, int x, int y, t_fractal *fractal);
 
 #endif
+
 
 int	handle_mouse(int button, int x, int y, t_fractal *fractal)
 {
@@ -138,6 +124,29 @@ int	handle_close(t_fractal *fractal)
 	exit(EXIT_SUCCESS);
 }
 
+int	change_color_range(t_fractal *fractal)
+{
+	if (fractal->color_range == 1)
+	{
+		fractal->cmin = BLACK;
+		fractal->cmax = WHITE;
+		fractal->color_range = 2;
+	}
+	else if (fractal->color_range == 2)
+	{
+		fractal->cmin = WHITE;
+		fractal->cmax = BLACK;
+		fractal->color_range = 3;
+	}
+	else if (fractal->color_range == 3)
+	{
+		fractal->cmin = BLACK;
+		fractal->cmax = ORANGE;
+		fractal->color_range = 1;
+	}
+	return (0);
+}
+
 int	handle_keypress(int keysym, t_fractal *fractal)
 {
 	if (keysym == XK_Escape)
@@ -154,6 +163,8 @@ int	handle_keypress(int keysym, t_fractal *fractal)
 		fractal->iter_definition += 10;
 	else if (keysym == XK_minus && fractal->iter_definition >= 10)
 		fractal->iter_definition -= 10;
+	else if (keysym == XK_c)
+		change_color_range(fractal);
 	fractal_render(fractal);
 	return (0);
 }
@@ -172,6 +183,12 @@ static void	data_init(t_fractal *fractal)
 	fractal->shift_x = 0.0;
 	fractal->shift_y = 0.0;
 	fractal->zoom = 1.0;
+	fractal->cmin = BLACK;
+	fractal->cmax = ORANGE;
+	if (!ft_strcmp(fractal->name, "julia"))
+		fractal->fractal_type = 2;
+	else
+		fractal->fractal_type = 1;
 }
 
 static void	events_init(t_fractal *fractal)
@@ -253,9 +270,9 @@ static void	my_pix_put(t_img *img, int x, int y, int color)
 	}
 }
 
-static void julia_vs_mandel(t_complex *z, t_complex *c, t_fractal *fractal)
+static void	julia_vs_mandel(t_complex *z, t_complex *c, t_fractal *fractal)
 {
-	if (!ft_strcmp(fractal->name, "julia"))
+	if (fractal->fractal_type == 2)
 	{
 		c->x = fractal->julia_x;
 		c->yi = fractal->julia_yi;
@@ -283,13 +300,13 @@ static void	handle_pixel(int x, int y, t_fractal *fractal)
 		z = sum_complex(square_complex(z), c);
 		if ((z.x * z.x) + (z.yi * z.yi) > fractal->escape_value)
 		{
-			color = rescale(i, WHITE, BLACK, 0, fractal->iter_definition);
+			color = rescale(i, fractal->cmax, fractal->cmin, 0, fractal->iter_definition);
 			my_pix_put(&fractal->img, x, y, color);
 			return ;
 		}
 		i++;
 	}
-	my_pix_put(&fractal->img, x, y, BLACK);
+	my_pix_put(&fractal->img, x, y, fractal->cmin);
 }
 
 void	fractal_render(t_fractal *fractal)

@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 12:20:27 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/05/03 10:50:35 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/05/08 13:06:11 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,29 @@ int	handle_close(t_fractal *fractal)
 	exit(EXIT_SUCCESS);
 }
 
+int	change_color_range(t_fractal *fractal)
+{
+	if (fractal->color_range == 1)
+	{
+		fractal->cmin = BLACK;
+		fractal->cmax = WHITE;
+		fractal->color_range = 2;
+	}
+	else if (fractal->color_range == 2)
+	{
+		fractal->cmin = WHITE;
+		fractal->cmax = BLACK;
+		fractal->color_range = 3;
+	}
+	else if (fractal->color_range == 3)
+	{
+		fractal->cmin = BLACK;
+		fractal->cmax = ORANGE;
+		fractal->color_range = 1;
+	}
+	return (0);
+}
+
 int	handle_keypress(int keysym, t_fractal *fractal)
 {
 	if (keysym == XK_Escape)
@@ -47,6 +70,8 @@ int	handle_keypress(int keysym, t_fractal *fractal)
 		fractal->iter_definition += 10;
 	else if (keysym == XK_minus && fractal->iter_definition >= 10)
 		fractal->iter_definition -= 10;
+	else if (keysym == XK_c)
+		change_color_range(fractal);
 	fractal_render(fractal);
 	return (0);
 }

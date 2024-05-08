@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 13:52:55 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/04/17 11:34:54 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/05/08 12:46:00 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,9 @@ static void	my_pix_put(t_img *img, int x, int y, int color)
 	}
 }
 
-static void julia_vs_mandel(t_complex *z, t_complex *c, t_fractal *fractal)
+static void	julia_vs_mandel(t_complex *z, t_complex *c, t_fractal *fractal)
 {
-	if (!ft_strcmp(fractal->name, "julia"))
+	if (fractal->fractal_type == 2)
 	{
 		c->x = fractal->julia_x;
 		c->yi = fractal->julia_yi;
@@ -59,13 +59,13 @@ static void	handle_pixel(int x, int y, t_fractal *fractal)
 		z = sum_complex(square_complex(z), c);
 		if ((z.x * z.x) + (z.yi * z.yi) > fractal->escape_value)
 		{
-			color = rescale(i, WHITE, BLACK, 0, fractal->iter_definition);
+			color = rescale(i, fractal->cmax, fractal->cmin, 0, fractal->iter_definition);
 			my_pix_put(&fractal->img, x, y, color);
 			return ;
 		}
 		i++;
 	}
-	my_pix_put(&fractal->img, x, y, BLACK);
+	my_pix_put(&fractal->img, x, y, fractal->cmin);
 }
 
 void	fractal_render(t_fractal *fractal)

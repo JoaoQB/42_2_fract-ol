@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 13:18:33 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/05/08 12:08:28 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/05/08 13:09:02 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,18 @@ static void	malloc_error(void)
 
 static void	data_init(t_fractal *fractal)
 {
-	fractal->iter_definition = 100;
+	fractal->iter_definition = 42;
 	fractal->escape_value = 4;
 	fractal->shift_x = 0.0;
 	fractal->shift_y = 0.0;
 	fractal->zoom = 1.0;
+	fractal->cmin = BLACK;
+	fractal->cmax = ORANGE;
+	fractal->color_range = 1;
+	if (!ft_strcmp(fractal->name, "julia"))
+		fractal->fractal_type = 2;
+	else
+		fractal->fractal_type = 1;
 }
 
 static void	events_init(t_fractal *fractal)
