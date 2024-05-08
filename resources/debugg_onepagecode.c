@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 13:41:20 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/05/08 13:12:09 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/05/08 14:50:03 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 './fractol mandelbrot' for Mandelbrot set\n\
 './fractol julia' for pre-determined Julia set\n\
 './fractol julia <re_value> <im_value>' for a custom Julia set\n\n\
-Press + and - to change the number of iterations\n\
+Press p and m to change the number of iterations (plus and minus)\n\
 Use the mouse wheel to zoom in and out\n\
 Use the arrow keys to move the image\n\
 Press c to change the color range\n"
@@ -160,9 +160,9 @@ int	handle_keypress(int keysym, t_fractal *fractal)
 		fractal->shift_y += (0.05 * fractal->zoom);
 	else if (keysym == XK_Down)
 		fractal->shift_y -= (0.05 * fractal->zoom);
-	else if (keysym == XK_plus && fractal->iter_definition <= 502)
+	else if (keysym == XK_p && fractal->iter_definition <= 502)
 		fractal->iter_definition += 10;
-	else if (keysym == XK_minus && fractal->iter_definition >= 10)
+	else if (keysym == XK_m && fractal->iter_definition >= 10)
 		fractal->iter_definition -= 10;
 	else if (keysym == XK_c)
 		change_color_range(fractal);
@@ -249,7 +249,7 @@ t_complex	square_complex(t_complex z)
 	t_complex	result;
 
 	result.x = (z.x * z.x) - (z.yi * z.yi);
-	result.yi = 2 * z.x * z.yi;
+	result.yi = (z.x + z.x) * z.yi;
 	return (result);
 }
 
@@ -291,11 +291,24 @@ static void	handle_pixel(int x, int y, t_fractal *fractal)
 	t_complex	c;
 	int			i;
 	int			color;
-
-	i = 0;
+	double		csquare;
+	// static double	xy[HEIGHT]; TODO!!!!
+	// // i = -1;
+	// // if (xy[0] == 0)
+	// // {
+	// // 	while (++i < HEIGHT)
+	// // 		xy[i] = ((-(HEIGHT + HEIGHT) + 4 * i) / HEIGHT);
+	// // }
+	// // z.x = (xy[x] * fractal->zoom) + fractal->shift_y;
+	// // z.yi = (xy[y] * fractal->zoom) + fractal->shift_y;
 	z.x = (rescale(x, -2, 2, 0, WIDTH) * fractal->zoom) + fractal->shift_x;
 	z.yi = (rescale(y, 2, -2, HEIGHT, 0) * fractal->zoom) + fractal->shift_y;
+	csquare = (z.x * z.x) + (z.yi * z.yi);
+	if ((256.0 * csquare * csquare - 96.0 * csquare + 32.0 * z.x - 3.0 < 0.0 )
+	|| (16.0 * (csquare +2.0 * z.x + 1.0) - 1.0 < 0.0))
+		return (my_pix_put(&fractal->img, x, y, fractal->cmin));
 	julia_vs_mandel(&z, &c, fractal);
+	i = 0;
 	while (i < fractal->iter_definition)
 	{
 		z = sum_complex(square_complex(z), c);

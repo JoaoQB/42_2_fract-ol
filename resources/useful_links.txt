@@ -33,10 +33,8 @@ https://lodev.org/cgtutor/juliamandelbrot.html | DONE
 
 https://stackoverflow.com/questions/41796832/smooth-zoom-with-mouse-in-mandelbrot-set-c
 
-https://www.shadertoy.com/view/4df3Rn
+https://www.shadertoy.com/view/4df3Rn | LER
 	IMPORTANT!
-	Escrever a parte das contas constantes numa array static
-	Por cap no máximo de iteraçoes da equação.++
 
 https://www.freecodecamp.org/news/what-is-endianness-big-endian-vs-little-endian/
 	what is endianness | DONE

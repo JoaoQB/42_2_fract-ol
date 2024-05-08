@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 12:20:27 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/05/08 13:06:11 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/05/08 14:08:27 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,9 +66,9 @@ int	handle_keypress(int keysym, t_fractal *fractal)
 		fractal->shift_y += (0.05 * fractal->zoom);
 	else if (keysym == XK_Down)
 		fractal->shift_y -= (0.05 * fractal->zoom);
-	else if (keysym == XK_plus && fractal->iter_definition <= 502)
+	else if (keysym == XK_p && fractal->iter_definition <= 502)
 		fractal->iter_definition += 10;
-	else if (keysym == XK_minus && fractal->iter_definition >= 10)
+	else if (keysym == XK_m && fractal->iter_definition >= 10)
 		fractal->iter_definition -= 10;
 	else if (keysym == XK_c)
 		change_color_range(fractal);

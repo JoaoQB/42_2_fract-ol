@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 12:58:23 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/05/08 13:12:04 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/05/08 14:08:43 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 './fractol mandelbrot' for Mandelbrot set\n\
 './fractol julia' for pre-determined Julia set\n\
 './fractol julia <re_value> <im_value>' for a custom Julia set\n\n\
-Press + and - to change the number of iterations\n\
+Press p and m to change the number of iterations (plus and minus)\n\
 Use the mouse wheel to zoom in and out\n\
 Use the arrow keys to move the image\n\
 Press c to change the color range\n"
