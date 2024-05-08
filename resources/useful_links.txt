@@ -29,7 +29,7 @@ http://www.karlsims.com/julia.html | DONE
 
 https://jonisalonen.com/2013/lets-draw-the-mandelbrot-set/ | DONE
 
-https://lodev.org/cgtutor/juliamandelbrot.html
+https://lodev.org/cgtutor/juliamandelbrot.html | DONE
 
 https://stackoverflow.com/questions/41796832/smooth-zoom-with-mouse-in-mandelbrot-set-c
 
