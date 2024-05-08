@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 12:58:23 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/05/08 14:08:43 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/05/08 15:38:01 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ typedef struct s_fractal
 	double	cmin;
 	double	cmax;
 	int		color_range;
+	int		first;
 }	t_fractal;
 
 typedef struct s_complex

@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 13:18:33 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/05/08 13:09:02 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/05/08 15:38:16 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ static void	data_init(t_fractal *fractal)
 	fractal->cmin = BLACK;
 	fractal->cmax = ORANGE;
 	fractal->color_range = 1;
+	fractal->first = 1;
 	if (!ft_strcmp(fractal->name, "julia"))
 		fractal->fractal_type = 2;
 	else

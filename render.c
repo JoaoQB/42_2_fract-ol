@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 13:52:55 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/05/08 14:50:11 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/05/08 15:45:10 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,24 @@ static void	julia_vs_mandel(t_complex *z, t_complex *c, t_fractal *fractal)
 	}
 }
 
+static void compute_rescale(double stored_x[WIDTH], double stored_y[HEIGHT])
+{
+	int i;
+
+	i = 0;
+    while (i < WIDTH)
+	{
+		stored_x[i] = rescale(i, -2, 2, 0, WIDTH);
+		i++;
+    }
+    i = 0;
+    while (i < HEIGHT)
+	{
+		stored_y[i] = rescale(i, 2, -2, HEIGHT, 0);
+		i++;
+    }
+}
+
 static void	handle_pixel(int x, int y, t_fractal *fractal)
 {
 	t_complex	z;
@@ -50,21 +68,23 @@ static void	handle_pixel(int x, int y, t_fractal *fractal)
 	int			i;
 	int			color;
 	double		csquare;
-	// static double	xy[HEIGHT]; TODO!!!!
-	// // i = -1;
-	// // if (xy[0] == 0)
-	// // {
-	// // 	while (++i < HEIGHT)
-	// // 		xy[i] = ((-(HEIGHT + HEIGHT) + 4 * i) / HEIGHT);
-	// // }
-	// // z.x = (xy[x] * fractal->zoom) + fractal->shift_y;
-	// // z.yi = (xy[y] * fractal->zoom) + fractal->shift_y;
-	z.x = (rescale(x, -2, 2, 0, WIDTH) * fractal->zoom) + fractal->shift_x;
-	z.yi = (rescale(y, 2, -2, HEIGHT, 0) * fractal->zoom) + fractal->shift_y;
-	csquare = (z.x * z.x) + (z.yi * z.yi);
-	if ((256.0 * csquare * csquare - 96.0 * csquare + 32.0 * z.x - 3.0 < 0.0 )
-	|| (16.0 * (csquare +2.0 * z.x + 1.0) - 1.0 < 0.0))
-		return (my_pix_put(&fractal->img, x, y, fractal->cmin));
+	static double	stored_x[WIDTH];
+	static double	stored_y[HEIGHT];
+
+	if (fractal->first == 1)
+	{
+		compute_rescale(stored_x, stored_y);
+		fractal->first = 0;
+	}
+	z.x = (stored_x[x] * fractal->zoom) + fractal->shift_x;
+	z.yi = (stored_y[y] * fractal->zoom) + fractal->shift_y;
+	if (fractal->fractal_type == 1)
+	{
+		csquare = (z.x * z.x) + (z.yi * z.yi);
+		if ((256.0 * csquare * csquare - 96.0 * csquare + 32.0 * z.x - 3.0 < 0.0 )
+		|| (16.0 * (csquare +2.0 * z.x + 1.0) - 1.0 < 0.0))
+			return (my_pix_put(&fractal->img, x, y, fractal->cmin));
+	}
 	julia_vs_mandel(&z, &c, fractal);
 	i = 0;
 	while (i < fractal->iter_definition)
