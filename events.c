@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 12:20:27 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/05/08 11:20:12 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/05/08 11:31:11 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 // 	fractal_render(fractal);
 // 	return (0);
 // }
+
 static double interpolate(double start, double end, double interpolation)
 {
     return start + ((end - start) * interpolation);
