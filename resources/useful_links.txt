@@ -33,7 +33,7 @@ https://lodev.org/cgtutor/juliamandelbrot.html | DONE
 
 https://stackoverflow.com/questions/41796832/smooth-zoom-with-mouse-in-mandelbrot-set-c
 
-https://www.shadertoy.com/view/4df3Rn | LER
+https://www.shadertoy.com/vie+w/4df3Rn | DONE
 	IMPORTANT!
 
 https://www.freecodecamp.org/news/what-is-endianness-big-endian-vs-little-endian/

@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 13:52:55 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/05/08 15:45:10 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/05/09 12:45:48 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,60 +43,50 @@ static void	julia_vs_mandel(t_complex *z, t_complex *c, t_fractal *fractal)
 	}
 }
 
-static void compute_rescale(double stored_x[WIDTH], double stored_y[HEIGHT])
+static void	cmp_scl(double st_x[WIDTH], double st_y[HEIGHT], t_fractal *fractal)
 {
-	int i;
+	int	i;
 
 	i = 0;
-    while (i < WIDTH)
+	while (i < WIDTH)
 	{
-		stored_x[i] = rescale(i, -2, 2, 0, WIDTH);
+		st_x[i] = rescale(i, 1);
 		i++;
-    }
-    i = 0;
-    while (i < HEIGHT)
+	}
+	i = 0;
+	while (i < WIDTH)
 	{
-		stored_y[i] = rescale(i, 2, -2, HEIGHT, 0);
+		st_y[i] = rescale(i, 2);
 		i++;
-    }
+	}
+	fractal->first = 0;
 }
 
 static void	handle_pixel(int x, int y, t_fractal *fractal)
 {
-	t_complex	z;
-	t_complex	c;
-	int			i;
-	int			color;
-	double		csquare;
-	static double	stored_x[WIDTH];
-	static double	stored_y[HEIGHT];
+	t_complex		z;
+	t_complex		c;
+	int				i;
+	static double	st_x[WIDTH];
+	static double	st_y[HEIGHT];
 
 	if (fractal->first == 1)
-	{
-		compute_rescale(stored_x, stored_y);
-		fractal->first = 0;
-	}
-	z.x = (stored_x[x] * fractal->zoom) + fractal->shift_x;
-	z.yi = (stored_y[y] * fractal->zoom) + fractal->shift_y;
-	if (fractal->fractal_type == 1)
-	{
-		csquare = (z.x * z.x) + (z.yi * z.yi);
-		if ((256.0 * csquare * csquare - 96.0 * csquare + 32.0 * z.x - 3.0 < 0.0 )
-		|| (16.0 * (csquare +2.0 * z.x + 1.0) - 1.0 < 0.0))
-			return (my_pix_put(&fractal->img, x, y, fractal->cmin));
-	}
+		cmp_scl(st_x, st_y, fractal);
+	z.x = (st_x[x] * fractal->zoom) + fractal->shift_x;
+	z.yi = (st_y[y] * fractal->zoom) + fractal->shift_y;
+	if (fractal->fractal_type == 1 && fill_mandel(&z))
+		return (my_pix_put(&fractal->img, x, y, fractal->cmin));
 	julia_vs_mandel(&z, &c, fractal);
-	i = 0;
-	while (i < fractal->iter_definition)
+	i = -1;
+	while (++i < fractal->iter_definition)
 	{
 		z = sum_complex(square_complex(z), c);
 		if ((z.x * z.x) + (z.yi * z.yi) > fractal->escape_value)
 		{
-			color = rescale(i, fractal->cmax, fractal->cmin, 0, fractal->iter_definition);
-			my_pix_put(&fractal->img, x, y, color);
+			fractal->color = rescale_color(i, fractal);
+			my_pix_put(&fractal->img, x, y, fractal->color);
 			return ;
 		}
-		i++;
 	}
 	my_pix_put(&fractal->img, x, y, fractal->cmin);
 }

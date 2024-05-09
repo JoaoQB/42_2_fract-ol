@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 12:58:23 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/05/08 15:38:01 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/05/09 12:45:03 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,12 +75,14 @@ typedef struct s_fractal
 	double	cmax;
 	int		color_range;
 	int		first;
+	int		color;
 }	t_fractal;
 
 typedef struct s_complex
 {
 	double	x;
 	double	yi;
+	double	csquare;
 }	t_complex;
 
 /* string_utils.c */
@@ -89,9 +91,11 @@ void		ft_putstr_fd(char *s, int fd);
 double		ft_atodbl(char *s);
 
 /* math_utils.c */
-double		rescale(double unscaled_num, double new_min, double new_max, double old_min, double old_max);
+double		rescale(double num, int flag);
+double		rescale_color(double num, t_fractal *fractal);
 t_complex	sum_complex(t_complex z1, t_complex z2);
 t_complex	square_complex(t_complex z);
+int			fill_mandel(t_complex *z);
 
 /* init.c */
 void		fractal_init(t_fractal *fractal);

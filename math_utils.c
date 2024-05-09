@@ -6,15 +6,35 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 09:20:00 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/05/08 12:22:31 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/05/09 12:44:42 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
 
-double	rescale(double unscaled_num, double new_min, double new_max, double old_min, double old_max)
+int	fill_mandel(t_complex *z)
 {
-	return ((new_max - new_min) * (unscaled_num - old_min) / (old_max - old_min) + new_min);
+	z->csquare = (z->x * z->x) + (z->yi * z->yi);
+	if ((256.0 * z->csquare * z->csquare - 96.0
+			* z->csquare + 32.0 * z->x - 3.0 < 0.0)
+		|| (16.0 * (z->csquare +2.0 * z->x + 1.0) - 1.0 < 0.0))
+		return (1);
+	else
+		return (0);
+}
+
+double	rescale(double num, int flag)
+{
+	if (flag == 1)
+		return ((2 - -2) * (num - 0) / (WIDTH - 0) + -2);
+	else
+		return ((-2 - 2) * (num - HEIGHT) / (0 - HEIGHT) + 2);
+}
+
+double	rescale_color(double num, t_fractal *fractal)
+{
+	return ((fractal->cmin - fractal->cmax)
+		* (num - 0) / (fractal->iter_definition - 0) + fractal->cmax);
 }
 
 t_complex	sum_complex(t_complex z1, t_complex z2)
