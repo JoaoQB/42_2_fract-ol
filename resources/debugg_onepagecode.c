@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 13:41:20 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/05/08 14:50:03 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/05/09 12:54:44 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,12 +74,15 @@ typedef struct s_fractal
 	double	cmin;
 	double	cmax;
 	int		color_range;
+	int		first;
+	int		color;
 }	t_fractal;
 
 typedef struct s_complex
 {
 	double	x;
 	double	yi;
+	double	csquare;
 }	t_complex;
 
 /* string_utils.c */
@@ -88,9 +91,11 @@ void		ft_putstr_fd(char *s, int fd);
 double		ft_atodbl(char *s);
 
 /* math_utils.c */
-double		rescale(double unscaled_num, double new_min, double new_max, double old_min, double old_max);
+double		rescale(double num, int flag);
+double		rescale_color(double num, t_fractal *fractal);
 t_complex	sum_complex(t_complex z1, t_complex z2);
 t_complex	square_complex(t_complex z);
+int			fill_mandel(t_complex *z);
 
 /* init.c */
 void		fractal_init(t_fractal *fractal);
@@ -104,7 +109,6 @@ int			handle_close(t_fractal *fractal);
 int			handle_mouse(int button, int x, int y, t_fractal *fractal);
 
 #endif
-
 
 int	handle_mouse(int button, int x, int y, t_fractal *fractal)
 {
@@ -186,6 +190,8 @@ static void	data_init(t_fractal *fractal)
 	fractal->zoom = 1.0;
 	fractal->cmin = BLACK;
 	fractal->cmax = ORANGE;
+	fractal->color_range = 1;
+	fractal->first = 1;
 	if (!ft_strcmp(fractal->name, "julia"))
 		fractal->fractal_type = 2;
 	else
@@ -230,9 +236,29 @@ void	fractal_init(t_fractal *fractal)
 }
 
 /* another page */
-double	rescale(double unscaled_num, double new_min, double new_max, double old_min, double old_max)
+int	fill_mandel(t_complex *z)
 {
-	return ((new_max - new_min) * (unscaled_num - old_min) / (old_max - old_min) + new_min);
+	z->csquare = (z->x * z->x) + (z->yi * z->yi);
+	if ((256.0 * z->csquare * z->csquare - 96.0
+			* z->csquare + 32.0 * z->x - 3.0 < 0.0)
+		|| (16.0 * (z->csquare +2.0 * z->x + 1.0) - 1.0 < 0.0))
+		return (1);
+	else
+		return (0);
+}
+
+double	rescale(double num, int flag)
+{
+	if (flag == 1)
+		return ((2 - -2) * (num - 0) / (WIDTH - 0) + -2);
+	else
+		return ((-2 - 2) * (num - HEIGHT) / (0 - HEIGHT) + 2);
+}
+
+double	rescale_color(double num, t_fractal *fractal)
+{
+	return ((fractal->cmin - fractal->cmax)
+		* (num - 0) / (fractal->iter_definition - 0) + fractal->cmax);
 }
 
 t_complex	sum_complex(t_complex z1, t_complex z2)
@@ -249,7 +275,7 @@ t_complex	square_complex(t_complex z)
 	t_complex	result;
 
 	result.x = (z.x * z.x) - (z.yi * z.yi);
-	result.yi = (z.x + z.x) * z.yi;
+	result.yi = 2 * z.x * z.yi;
 	return (result);
 }
 
@@ -285,40 +311,50 @@ static void	julia_vs_mandel(t_complex *z, t_complex *c, t_fractal *fractal)
 	}
 }
 
+static void	cmp_scl(double st_x[WIDTH], double st_y[HEIGHT], t_fractal *fractal)
+{
+	int	i;
+
+	i = 0;
+	while (i < WIDTH)
+	{
+		st_x[i] = rescale(i, 1);
+		i++;
+	}
+	i = 0;
+	while (i < WIDTH)
+	{
+		st_y[i] = rescale(i, 2);
+		i++;
+	}
+	fractal->first = 0;
+}
+
 static void	handle_pixel(int x, int y, t_fractal *fractal)
 {
-	t_complex	z;
-	t_complex	c;
-	int			i;
-	int			color;
-	double		csquare;
-	// static double	xy[HEIGHT]; TODO!!!!
-	// // i = -1;
-	// // if (xy[0] == 0)
-	// // {
-	// // 	while (++i < HEIGHT)
-	// // 		xy[i] = ((-(HEIGHT + HEIGHT) + 4 * i) / HEIGHT);
-	// // }
-	// // z.x = (xy[x] * fractal->zoom) + fractal->shift_y;
-	// // z.yi = (xy[y] * fractal->zoom) + fractal->shift_y;
-	z.x = (rescale(x, -2, 2, 0, WIDTH) * fractal->zoom) + fractal->shift_x;
-	z.yi = (rescale(y, 2, -2, HEIGHT, 0) * fractal->zoom) + fractal->shift_y;
-	csquare = (z.x * z.x) + (z.yi * z.yi);
-	if ((256.0 * csquare * csquare - 96.0 * csquare + 32.0 * z.x - 3.0 < 0.0 )
-	|| (16.0 * (csquare +2.0 * z.x + 1.0) - 1.0 < 0.0))
+	t_complex		z;
+	t_complex		c;
+	int				i;
+	static double	st_x[WIDTH];
+	static double	st_y[HEIGHT];
+
+	if (fractal->first == 1)
+		cmp_scl(st_x, st_y, fractal);
+	z.x = (st_x[x] * fractal->zoom) + fractal->shift_x;
+	z.yi = (st_y[y] * fractal->zoom) + fractal->shift_y;
+	if (fractal->fractal_type == 1 && fill_mandel(&z))
 		return (my_pix_put(&fractal->img, x, y, fractal->cmin));
 	julia_vs_mandel(&z, &c, fractal);
-	i = 0;
-	while (i < fractal->iter_definition)
+	i = -1;
+	while (++i < fractal->iter_definition)
 	{
 		z = sum_complex(square_complex(z), c);
 		if ((z.x * z.x) + (z.yi * z.yi) > fractal->escape_value)
 		{
-			color = rescale(i, fractal->cmax, fractal->cmin, 0, fractal->iter_definition);
-			my_pix_put(&fractal->img, x, y, color);
+			fractal->color = rescale_color(i, fractal);
+			my_pix_put(&fractal->img, x, y, fractal->color);
 			return ;
 		}
-		i++;
 	}
 	my_pix_put(&fractal->img, x, y, fractal->cmin);
 }
@@ -344,7 +380,6 @@ void	fractal_render(t_fractal *fractal)
 }
 
 /* another page */
-
 int	ft_strcmp(const char *str, const char *str2)
 {
 	int	i;
