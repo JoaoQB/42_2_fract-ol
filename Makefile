@@ -6,7 +6,7 @@
 #    By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/08 12:03:00 by jqueijo-          #+#    #+#              #
-#    Updated: 2024/05/08 12:04:08 by jqueijo-         ###   ########.fr        #
+#    Updated: 2024/05/09 14:05:34 by jqueijo-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,12 +28,14 @@ OBJ = $(SRC:.c=.o)
 all: $(NAME)
 
 $(NAME) : $(OBJ)
+	make -C minilibx-linux
 	$(CC) $(CFLAGS) $(OBJ) $(MINILIBX_FLAGS) -o $(NAME)
 
 clean:
 	rm -f $(OBJ)
 
 fclean: clean
+	make clean -C minilibx-linux
 	rm -f $(NAME)
 
 re: fclean all
