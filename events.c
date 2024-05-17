@@ -6,13 +6,13 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 12:20:27 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/05/08 14:08:27 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/05/17 12:56:07 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
 
-int	handle_mouse(int button, int x, int y, t_fractal *fractal)
+int	handle_mouse(int button, t_fractal *fractal)
 {
 	if (button == Button4)
 		fractal->zoom *= 0.95;

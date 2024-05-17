@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 12:58:23 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/05/09 12:45:03 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/05/17 12:56:19 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,6 @@ void		fractal_render(t_fractal *fractal);
 /* events.c */
 int			handle_keypress(int keysym, t_fractal *fractal);
 int			handle_close(t_fractal *fractal);
-int			handle_mouse(int button, int x, int y, t_fractal *fractal);
+int			handle_mouse(int button, t_fractal *fractal);
 
 #endif

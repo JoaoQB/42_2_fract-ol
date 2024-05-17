@@ -6,7 +6,7 @@
 /*   By: jqueijo- <jqueijo-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 14:02:53 by jqueijo-          #+#    #+#             */
-/*   Updated: 2024/05/06 15:40:23 by jqueijo-         ###   ########.fr       */
+/*   Updated: 2024/05/17 12:55:14 by jqueijo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	main(int argc, char **argv)
 	t_fractal	fractal;
 
 	if ((argc == 2 && !ft_strcmp(argv[1], "mandelbrot"))
-		|| (!ft_strcmp(argv[1], "julia")) && (argc == 2 || argc == 4))
+		|| ((!ft_strcmp(argv[1], "julia")) && (argc == 2 || argc == 4)))
 	{
 		fractal.name = argv[1];
 		if (argv[2] && argv[3])
